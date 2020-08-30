@@ -1,0 +1,7 @@
+{
+  "name": "SmartCasterIonic",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
