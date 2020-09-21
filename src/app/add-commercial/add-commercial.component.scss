@@ -1,0 +1,173 @@
+.add-commercial-wrapper{
+    display: block;
+    width: 100%;
+    height: 100%;
+    margin: auto;
+}
+.add-commercial-container{
+    display: block;
+    float: left;
+    width: 100%;
+    height: 100%;
+}
+.add-commercial-main{
+    display: block;
+    float: left;
+    width: 75%;
+    height: 100%;
+}
+.add-commercial-files{
+    display: block;
+    float: left;
+    width: 25%;
+    height: 100%;
+}
+.create-commercial-wrapper{
+    display: block;
+    width: 75%;
+    height: 100%;
+    margin: auto;
+}
+.create-commercial-container {
+    display: block;
+    float: left;
+    width: 100%;
+    height: 94%;
+    padding: 2%;
+    margin: 2%;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(255,255,255, .1);
+    background: var(--ion-color-primary);
+}
+.commercial-list-wrapper{
+    display: block;
+    width: 98%;
+    height: 90%;
+    margin: auto;
+}
+.commercial-list-container{
+    display: block;
+    float: left;
+    width: 100%;
+    height: 100%;
+}
+.commercial-list{
+    display: block;
+    float: left;
+    position: relative;
+    height: 70%;
+    width: 100%;
+    overflow: scroll;
+    background: #f2f2f2;
+}
+.no-commericals-button{
+    padding: 0 0 10px 0;
+}
+.commercial-name-input{
+    padding: 1% 0;
+}
+.commercial-item{
+    display: block;
+    width: 90%;
+    margin: auto;
+}
+.commercial-item ion-img{
+    border-radius: 11%;
+}
+.commercial-item-name{
+    position: relative;
+    text-align: center;
+    display: block;
+    width: 100%;
+    top: -30px;
+}
+.add-commercial-label{
+    background: var(--ion-color-primary);
+    margin: 0;
+    padding: 10px 0;
+    text-align: center;
+}
+.spot-files,
+.commercial-files{
+    display: block;
+    float: left;
+    width: 100%;
+    height: 50%;
+}
+.spot-files .file-list,
+.commercial-files .file-list{
+    display: block;
+    float: left;
+    width: 100%;
+    height: 80%;
+    overflow: scroll;
+}
+.right-align{
+    margin: 0 0 0 24px;
+}
+.add-commercial-button-container{
+    display: block;
+    float: left;
+    width: 100%;
+}
+.add-commercial-cancel{
+    display: block;
+    float: left;
+    width: 50%;
+    padding: 1% 0 0 0;
+}
+.add-commercial-submit{
+    display: block;
+    float: left;
+    width: 50%;
+    padding: 1% 0 0 0;
+}
+.add-commercial-submit ion-button{
+    float: right;
+}
+.audio-player{
+    display: block;
+    float: left;
+    width: 100%;
+    padding: 2% 0;
+}
+
+// Drag and drop
+.cdk-drag-preview {
+    box-sizing: border-box;
+    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+                0 8px 10px 1px rgba(0, 0, 0, 0.14),
+                0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+.cdk-drag-animating {
+    transition: transform 150ms cubic-bezier(0, 0, 0.2, 1);
+}
+.drag-list{
+    min-height: 44px;
+}
+.drag-list.cdk-drop-list-dragging .drag-box:not(.cdk-drag-placeholder) {
+    transition: transform 150ms cubic-bezier(0, 0, 0.2, 1);
+}
+.cdk-drag-placeholder {
+    background: #ccc;
+    
+    color: #ccc;
+    min-height: 44px;
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+.drag-handle-front {
+    position: absolute;
+    top: 10px;
+    left: -1%;
+    color: #ccc;
+    width: 33px;
+    height: 33px;
+} 
+.drag-handle-behind {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #ccc;
+    width: 33px;
+    height: 33px;
+  }

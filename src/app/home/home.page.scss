@@ -1,27 +1,69 @@
-#container {
+ion-header.nav-bar {
+  border-bottom: 5px solid #fff;
+}
+ion-toolbar.nav-bar-background{
+  --background: linear-gradient(to bottom, #27aae1,#2a4ba0);
+}
+.nav-logo-container {
+  display: block;
+  float: left;
+  padding: 2% 1%;
+  width: 14%;
+}
+.nav-title-container {
+  display: block;
+  float: left;
+  width: 70%;
   text-align: center;
-
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
+  padding: 4% 0;
+}
+.nav-title-container img{
+  display: block;
+  width: 50%;
+  margin: auto;
+}
+.home-wrapper {
+  display: block;
+  width: 98%;
+  margin: 2% auto;
+}
+.home-container {
+  display: block;
+  float: left;
+  width: 100%;
+}
+.logo-wrapper {
+  display: block;
+  width: 30%;
+  margin: auto;
+}
+.logo-container {
+  display: block;
+  float: left;
+  width: 100%;
+  position: relative;
+}
+.logo-container img{
+  display: block;
+  width: 90%;
+  margin: 5% auto;
+  border-radius: 50%;
+  animation: animateLogo 4s linear infinite;
+}
+.create-account-close{
+  text-align: right;
+}
+.create-account-button{
+  display: block;
+  width: 40%;
+  margin: auto;
 }
 
-#container strong {
-  font-size: 20px;
-  line-height: 26px;
-}
-
-#container p {
-  font-size: 16px;
-  line-height: 22px;
-
-  color: #8c8c8c;
-
-  margin: 0;
-}
-
-#container a {
-  text-decoration: none;
+@keyframes animateLogo {
+  0%   {box-shadow: 0 0 50px rgba(0, 162, 255, 0.8);}
+  20%  {box-shadow: 0 0 40px rgba(132, 0, 255, 0.8);}
+  40%  {box-shadow: 0 0 50px rgba(255, 0, 0, 0.8);}
+  60%  {box-shadow: 0 0 40px rgba(255, 123, 0, 0.8);}
+  80%  {box-shadow: 0 0 50px rgba(255, 217, 0, 0.8);}
+  100% {box-shadow: 0 0 45px rgba(0, 162, 255, 0.8);}
 }

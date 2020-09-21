@@ -1,0 +1,15 @@
+<!-- <ion-content>
+  <div class="search-bar">
+    <ion-button (click)="GoBack()" [disabled]="!canGoBackward" expand="full" class="back-button"><ion-icon name="arrow-back-outline"></ion-icon></ion-button>
+    <ion-button (click)="GoForward()" [disabled]="!canGoForward" expand="full" class="forward-button"><ion-icon name="arrow-forward-outline"></ion-icon></ion-button>
+    <ion-item class="search-input">
+      <ion-input [(ngModel)]="url"
+                 placeholder="Enter URL">
+      </ion-input>
+    </ion-item>
+    <ion-button expand="full" class="search-button" (click)="openWithIframe(url)"><ion-icon name="search-outline"></ion-icon></ion-button>
+  </div>
+  <iframe class="web-view" src="" name="test_iframe"></iframe>
+</ion-content> -->
+
+<ion-button expand="full" class="search-button" (click)="openWithSystemBrowser()"><ion-icon name="search-outline"></ion-icon></ion-button>

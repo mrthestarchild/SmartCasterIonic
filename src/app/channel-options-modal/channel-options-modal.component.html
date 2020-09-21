@@ -1,0 +1,42 @@
+<div class="channel-options-wrapper">
+  <div class="channel-options-container">
+    <h2>Edit Channel Info</h2>
+    <ion-item>
+      <ion-input [(ngModel)]="channelData.ChannelName"
+                 placeholder="What would you like to name this channel?">
+      </ion-input>
+    </ion-item>
+    <ion-label color="warning" *ngIf="channelData.ChannelName == ''">You must have a name selected</ion-label>
+
+      <!-- <ion-select placeholder="What Icon should it have?" [(ngModel)]="channelData.ChannelIcon">
+        <ng-container *ngFor="let icon of IconList">
+          <ion-select-option value="{{icon}}" >
+            <ion-icon style="color: #fff" size="large" [name]="icon">{{icon}}</ion-icon>
+          </ion-select-option>
+        </ng-container>
+      </ion-select> -->
+    <div class="icon-label-container">
+      <ion-label class="icon-label">Please select an Icon</ion-label>
+      <ion-item lines="none">
+        <mat-select class="icon-selector" [(ngModel)]="channelData.ChannelIcon">
+          <mat-option [value]="icon" *ngFor="let icon of IconList">
+            <ion-icon  size="large" [name]="icon"></ion-icon>
+          </mat-option>
+        </mat-select>
+      </ion-item>
+      <ion-icon class="icon-outter" [name]="channelData.ChannelIcon" size="large"></ion-icon>
+    </div>
+    <ion-item lines="none">
+      <ion-label>Color Selection</ion-label>
+      <ion-input class="color-picker ion-no-padding" type="color" [(ngModel)]="channelData.ChannelColor" ></ion-input>
+    </ion-item>
+    <div class="channel-options-button-container">
+      <div class="channel-options-cancel">
+        <ion-button color="danger" (click)="Cancel()">Cancel</ion-button>
+      </div>
+      <div class="channel-options-submit">
+        <ion-button [disabled]="channelData.ChannelName == ''" color="success" (click)="CreateChannel()">Add Pad</ion-button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,71 @@
+<div class="mixer-wrapper">
+  <div class="mixer-container">
+    <div class="soundboard-wrapper">
+      <div class="soundboard-container">
+        <div class="channel-wrapper" *ngFor="let mixer of selectedSoundLevel.MixerChannelsJson.Channels; let i = index;" >
+          <div class="mixer-knob-container" *ngFor="let mixerKnob of mixer.MixerKnobs; let ind = index;" >
+            <img src="../../assets/images/{{mixerKnob.MixerKnobImage}}"
+                 id="eqKnob{{i}}{{ind}}"
+                 (pan)="TurnEqKnob($event, i, ind)" />
+            <p class="mixer-knob-value">
+              {{mixerKnob.CurrentVolume}}
+            </p>
+          </div>
+          <div class="mixer-options-wrapper">
+            <div class="mixer-options-container"
+                 id="channelView{{i}}"
+                 [style.background]="mixer.ChannelColor"
+                 (tap)="ToggleMuteButton(mixer)"
+                 (press)="OpenMixerMenu(mixer)">
+              <div class="mixer-options-icon">
+                <ion-icon size="large" name="{{mixer.ChannelIconName}}"></ion-icon>
+              </div>
+              <div class="mixer-options-label">
+                {{mixer.ChannelDisplayName}}
+              </div>
+              <div class="mute-button"
+                   [hidden]="!mixer.IsMuted">
+              </div>
+            </div>
+          </div>
+          <div class="slider-wrapper">
+            <div class="slider-container">
+              <div class="mixer-slider-container">
+                  <mat-slider class="mixer-slider" (pan)="Log()" vertical></mat-slider>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="utility-wrapper">
+      <div class="utility-container">
+        <ion-list-header id="commercial-container" class="selected-container" (click)="ToggleUtilityContainer(false)">
+          <ion-label >
+            Commercials
+          </ion-label>
+        </ion-list-header>
+        <ion-list-header id="pad-container" (click)="ToggleUtilityContainer(true)">
+          <ion-label>
+            Pads
+          </ion-label>
+        </ion-list-header>
+        <ion-list class="file-list" *ngIf="!showPads">
+          <ng-container class="file" *ngFor="let spot of userInfo.SpotCollections; let i = index">
+            <ion-item color="dark" >
+              {{spot.Name}}
+            </ion-item>
+          </ng-container>
+        </ion-list>
+        <div class="pad-list-container" *ngIf="showPads">
+          <div class="pad-list" *ngFor="let spot of userInfo.PadCollections[selectedPadCollectionIndex].SpotList; let i = index">
+            <div class="pad-item">
+              <ion-img [style.background]="spot.Setting.PadCollectionBackgroundColor" id="padImage{{i}}" src="../../assets/images/SoundPad8.png"></ion-img>
+              <ion-label class="pad-item-name">{{spot.Name}}</ion-label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,42 @@
+.create-account-modal-wrapper {
+    display: block;
+    width: 92%;
+    margin: auto;
+    height: 92%;
+}
+.create-account-modal-container {
+    display: block;
+    float: left;
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+.create-account-modal-container h2,
+.create-account-modal-container p {
+    text-align: center;
+}
+.create-account-button-container{
+    display: block;
+    float: left;
+    width: 94%;
+    margin: 5% 3%;
+    position: absolute;
+    bottom: 0;
+}
+.create-account-button-container .create-account-cancel{
+    display: block;
+    float: left;
+    width: 50%;
+    margin: 0;
+    padding: 0;
+}
+.create-account-button-container .create-account-submit{
+    display: block;
+    float: left;
+    width: 50%;
+    margin: 0;
+    padding: 0;
+}
+.create-account-submit ion-button {
+    float: right;
+}

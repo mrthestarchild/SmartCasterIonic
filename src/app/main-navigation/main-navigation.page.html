@@ -1,0 +1,73 @@
+<ion-header class="nav-bar">
+  <ion-toolbar class="nav-bar-background">
+    <div class="nav-logo-container">
+      <img src="../../assets/icon/logo-sc.png">
+    </div>
+    <div class="nav-title-container">
+      <img src="../../assets/icon/title-logo.png">
+    </div>
+    <div class="nav-logout-container">
+      <ion-icon (tap)="Logout()" size="large" name="log-out-outline"></ion-icon>
+    </div>
+  </ion-toolbar>
+</ion-header>
+<div class="main-nav-wrapper">
+  <div class="main-nav-container">
+    <super-tabs scollable [config]="superTabsConfig" activeTabIndex="2">
+      <super-tabs-toolbar slot="top" color="accent">
+        <!-- <super-tab-button>
+          <ion-label>Test</ion-label>    
+        </super-tab-button> -->
+        <super-tab-button>
+          <ion-label>Mixer</ion-label>    
+        </super-tab-button>
+        <super-tab-button>
+          <ion-label>Edit Commericials</ion-label>    
+        </super-tab-button>
+        <super-tab-button>
+          <ion-label>Edit Pads</ion-label>    
+        </super-tab-button>
+        <super-tab-button>
+          <ion-label>Web Browser</ion-label>    
+        </super-tab-button>
+        <super-tab-button>
+          <ion-label>Settings</ion-label>    
+        </super-tab-button>
+      </super-tabs-toolbar>
+      <super-tabs-container>
+        <!-- <super-tab>
+          <app-test class="super-tab-wrapper"></app-test>
+        </super-tab> -->
+        <super-tab>
+          <app-mixer class="super-tab-wrapper"></app-mixer>
+        </super-tab>
+        <super-tab>
+          <app-add-commercial class="super-tab-wrapper"></app-add-commercial>
+        </super-tab>
+        <super-tab>
+          <app-add-pad class="super-tab-wrapper"></app-add-pad>
+        </super-tab>
+        <super-tab>
+          <app-web-browser class="super-tab-wrapper"></app-web-browser>
+        </super-tab>
+        <super-tab>
+          <app-settings class="super-tab-wrapper"></app-settings>
+        </super-tab>
+      </super-tabs-container>
+    </super-tabs>
+  </div>
+</div>
+<div class="overlay-wrapper" [@showMainLoading]="showMainLoading">
+  <div class="overlay-container">
+    <div class="image-wrapper">
+      <div class="image-container">
+        <img src="../../assets/icon/main-logo.png" />
+      </div>
+    </div>
+    <div class="info-container">
+      <ion-text color="primary">
+        {{loadingInfoMessage}}
+      </ion-text>
+    </div>
+  </div>
+</div>

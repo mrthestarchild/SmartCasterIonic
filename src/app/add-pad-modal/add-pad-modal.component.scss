@@ -1,0 +1,47 @@
+.add-pad-modal-wrapper {
+    display: block;
+    width: 92%;
+    margin: auto;
+    height: 92%;
+}
+.add-pad-modal-container {
+    display: block;
+    float: left;
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+.add-pad-modal-container h2 {
+    text-align: center;
+}
+.add-pad-modal-container ion-item{
+    padding: 2% 0;
+}
+.add-pad-modal-container .native-input {
+    padding: 0;
+}
+.add-pad-button-container{
+    display: block;
+    float: left;
+    width: 94%;
+    margin: 5% 3%;
+    position: absolute;
+    bottom: 0;
+}
+.add-pad-button-container .add-pad-cancel{
+    display: block;
+    float: left;
+    width: 50%;
+    margin: 0;
+    padding: 0;
+}
+.add-pad-button-container .add-pad-submit{
+    display: block;
+    float: left;
+    width: 50%;
+    margin: 0;
+    padding: 0;
+}
+.add-pad-submit ion-button {
+    float: right;
+}

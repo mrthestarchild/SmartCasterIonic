@@ -1,0 +1,31 @@
+<div class="add-pad-modal-wrapper">
+  <div class="add-pad-modal-container">
+    <h2>Add New Pad</h2>
+    <ion-item>
+      <ion-input [(ngModel)]="padData.Name"
+                 placeholder="Enter Name For Selected Track">
+      </ion-input>
+    </ion-item>
+    <ion-label color="warning" *ngIf="padData.Name == ''">The name will be defaulted to the Track name</ion-label>
+    <ion-item lines="none">
+      <ion-label>Track Selection</ion-label>
+      <ion-select placeholder="Select a Spot to load" [(ngModel)]="padData.SelectedIndex">
+        <ng-container *ngFor="let spot of spots; let i = index">
+          <ion-select-option value="{{i}}" >{{spot.Name}}</ion-select-option>
+        </ng-container>
+      </ion-select>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-label>Color Selection</ion-label>
+      <ion-input class="color-picker ion-no-padding" type="color" [(ngModel)]="padData.SelectedBackgroundColor" ></ion-input>
+    </ion-item>
+    <div class="add-pad-button-container">
+      <div class="add-pad-cancel">
+        <ion-button color="danger" (click)="Cancel()">Cancel</ion-button>
+      </div>
+      <div class="add-pad-submit">
+        <ion-button [disabled]="padData.SelectedBackgroundColor == '' || padData.SelectedIndex == -1" color="success" (click)="CreatePad()">Add Pad</ion-button>
+      </div>
+    </div>
+  </div>
+</div>

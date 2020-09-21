@@ -1,0 +1,27 @@
+<div class="login-wrapper">
+  <div class="login-wrapper-container">
+    <div class="login-container">
+      <form [formGroup]="loginForm" (ngSubmit)="SubmitLogin()">
+        <div class="login-input">
+          <ion-item class="input-item" lines="none">
+            <ion-icon size="small" name="person-outline" slot="start"></ion-icon>
+            <ion-input #username placeholder="Username" formControlName="username" (keyup.enter)="GoToNext(password)" ></ion-input>
+          </ion-item>
+        </div>
+        <div class="login-input">
+          <ion-item class="input-item" lines="none">
+            <ion-icon size="small" name="lock-closed-outline" slot="start"></ion-icon>
+            <ion-input #password placeholder="Password" formControlName="password" type="password" (keyup.enter)="GoToNext(submit)"></ion-input>
+          </ion-item>
+        </div>
+        <ion-item class="half-width" lines="none">
+          <ion-label >Remeber Me</ion-label>
+          <ion-checkbox slot="start" color="primary" formControlName="rememberUser"></ion-checkbox>
+        </ion-item>
+        <ion-spinner *ngIf="loginLoading"></ion-spinner>
+        <ion-button #submit [disabled]="loginForm.invalid" class="half-width" expand="full" shape="round" color="primary" type="submit">Sign In</ion-button>
+        <p *ngIf="showError" >{{errorText}}</p>
+      </form>
+    </div>
+  </div>
+</div>

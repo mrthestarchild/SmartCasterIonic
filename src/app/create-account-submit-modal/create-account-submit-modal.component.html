@@ -1,0 +1,14 @@
+<div class="create-account-modal-wrapper">
+  <div class="create-account-modal-container">
+    <h2>{{responseStatus}}</h2>
+    <p>{{responseMessage}} <span *ngIf="responseMessage.toLowerCase() == 'success'"> If you click okay we will try to sign you in to your newly created account.</span></p>
+    <div class="create-account-button-container">
+      <div class="create-account-cancel">
+        <ion-button color="danger" (click)="Cancel()">Cancel</ion-button>
+      </div>
+      <div class="create-account-submit">
+        <ion-button color="success" (click)="DoLogin()">Okay</ion-button>
+      </div>
+    </div>
+  </div>
+</div>

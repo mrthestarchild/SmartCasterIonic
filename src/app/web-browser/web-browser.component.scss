@@ -1,0 +1,39 @@
+.search-bar {
+    display: block;
+    float: left;
+    width: 100%;
+}
+
+.search-bar .back-button{
+    display: block;
+    float: left;
+    width: 10%;
+    margin: 0;
+}
+.search-bar .forward-button{
+    display: block;
+    float: left;
+    width: 10%;
+    margin: 0;
+}
+
+.search-bar .search-input{
+    display: block;
+    float: left;
+    width: 70%;
+}
+.search-bar .search-button{
+    display: block;
+    float: left;
+    width: 10%;
+    margin: 0;
+}
+.web-view{
+    display: block;
+    float: left;
+    width: 100%;
+    height: 92%;
+}
+ion-content {
+    --overflow: hidden;
+}

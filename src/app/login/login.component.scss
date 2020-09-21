@@ -1,0 +1,29 @@
+.login-wrapper {
+    display: block;
+    width: 98%;
+    margin: 2% auto;
+}
+.login-wrapper-container {
+    display: block;
+    float: left;
+    width: 40%;
+    margin: 1% 30% 2% 30%;
+}
+.login-container{
+    display: block;
+    float: left;
+    width: 100%;
+}
+.login-input {
+    border: 1px solid #fff;
+    border-radius: 20px;
+    margin: 5% 0;
+}
+.half-width {
+    display: block;
+    float: left;
+    width: 48%;
+}
+.login-input .input-item{
+    --background: transparent;
+}

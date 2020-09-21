@@ -1,0 +1,19 @@
+<div class="settings-wrapper">
+  <div class="settings-container">
+    <ion-list class="settings-list">
+      <ion-item class="settings-item" padding>
+        <ion-label>Dark Mode</ion-label>
+        <ion-toggle [checked]="userInfo.UserSettings['SelectedTheme'].Value == 'dark'"
+                    [(ngModel)]="selectedThemeSetting">
+        </ion-toggle>
+      </ion-item>
+      <ion-item class="settings-item" padding>
+        <ion-label>Save Web History</ion-label>
+        <ion-toggle></ion-toggle>
+      </ion-item>
+    </ion-list>
+    <div class="save-settings-container">
+      <ion-button>Save Settings</ion-button>
+    </div>
+  </div>
+</div>

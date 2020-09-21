@@ -1,0 +1,82 @@
+<div class="create-account-wrapper">
+  <div class="create-account-container">
+    <form [formGroup]="createAccountForm">
+      <h2>Personal Information</h2>
+      <ion-item>
+        <ion-input formControlName="businessName"
+                   placeholder="Business Name">
+        </ion-input>
+      </ion-item>
+      <ion-text class="input-validation" color="danger" *ngIf="createAccountForm.controls.businessName.invalid && createAccountForm.controls.businessName.dirty">
+        You must enter a Business Name
+      </ion-text>
+      <ion-item>
+        <ion-input formControlName="firstName"
+                   placeholder="First Name">
+        </ion-input>
+      </ion-item>
+      <ion-text class="input-validation" color="danger" *ngIf="createAccountForm.controls.firstName.invalid && createAccountForm.controls.firstName.dirty">
+        You must enter a First Name
+      </ion-text>
+      <ion-item>
+        <ion-input formControlName="lastName"
+                   placeholder="Last Name">
+        </ion-input>
+      </ion-item>
+      <ion-text class="input-validation" color="danger" *ngIf="createAccountForm.controls.lastName.invalid && createAccountForm.controls.lastName.dirty">
+        You must enter a Last Name
+      </ion-text>
+      <ion-item>
+        <ion-input formControlName="email"
+                   placeholder="Email"
+                   type="email">
+        </ion-input>
+      </ion-item>
+      <ion-text class="input-validation" color="danger" *ngIf="createAccountForm.controls.email.invalid && createAccountForm.controls.email.dirty">
+        You must enter a valid Email
+      </ion-text>
+      <ion-item>
+        <ion-input formControlName="phoneNumber"
+                   placeholder="Phone Number"
+                   simpleMask="(999)999-9999"
+                   [clearIfNotMatch]="true">
+        </ion-input>
+      </ion-item>
+      <ion-text class="input-validation" color="danger" *ngIf="createAccountForm.controls.phoneNumber.invalid && createAccountForm.controls.phoneNumber.dirty">
+        You must enter a valid Phone Number
+      </ion-text>
+      <h2>User Information</h2>
+      <ion-item>
+        <ion-input formControlName="username"
+                   placeholder="User Name">
+        </ion-input>
+      </ion-item>
+      <ion-text class="input-validation" color="danger" *ngIf="createAccountForm.controls.username.invalid && createAccountForm.controls.username.dirty">
+        You must enter a User Name
+      </ion-text>
+      <ion-item>
+        <ion-input formControlName="password"
+                   placeholder="Password"
+                   type="password">
+        </ion-input>
+      </ion-item>
+      <ion-text class="input-validation" color="danger" *ngIf="createAccountForm.controls.password.invalid && createAccountForm.controls.password.dirty">
+        You must enter a valid Password
+      </ion-text>
+      <ion-item>
+        <ion-input formControlName="confirmPassword"
+                   placeholder="Confirm Password"
+                   type="password">
+        </ion-input>
+      </ion-item>
+      <ion-text class="input-validation" color="danger" *ngIf="(createAccountForm.controls.password.value != createAccountForm.controls.confirmPassword.value) && createAccountForm.controls.confirmPassword.dirty">
+        Your passwords do not match.
+      </ion-text>
+      <ion-button *ngIf="!loading" expand="full" shape="round" color="primary" [disabled]="!createAccountForm.valid"  (click)="CreateAccount()">CreateAccount</ion-button>
+      <ion-spinner *ngIf="loading"></ion-spinner>
+      <ion-text color="danger" *ngIf="showError">
+        {{errorMessage}}. Please try loging in through the login page.
+      </ion-text>
+    </form>
+  </div>
+</div>

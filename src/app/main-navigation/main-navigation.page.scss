@@ -1,0 +1,121 @@
+ion-header.nav-bar {
+    height: 20vh;
+    min-height: 153px;
+}
+ion-toolbar.nav-bar-background{
+    height: 100%;
+    --background: linear-gradient(to bottom, #27aae1,#2a4ba0)!important;
+}
+.nav-logo-container {
+    display: block;
+    float: left;
+    padding: 2% 1%;
+    width: 14%;
+}
+.nav-title-container {
+    display: block;
+    float: left;
+    width: 70%;
+    text-align: center;
+    padding: 4% 0;
+}
+.nav-title-container img{
+    display: block;
+    width: 50%;
+    margin: auto;
+}
+.nav-logout-container{
+    display: block;
+    float: right;
+    width: 14%;
+    text-align: center;
+    padding: 4% 0;
+}
+.main-nav-wrapper {
+    display: block;
+    width: 100%;
+    height: 80vh;
+    margin: auto;
+    position: relative;
+}
+.main-nav-container {
+    display: block;
+    float: left;
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+.super-tab-wrapper{
+    display: block;
+    float: left;
+    width: 100%;
+    height: 100%;
+}
+.inset-tab{
+    display: block;
+    float: left;
+    width: 100%;
+}
+ion-tabs ion-tab-bar{
+    --background: #fff;
+}
+:host {  
+    --super-tabs-toolbar-background: #fff;
+    --st-indicator-color: var(--ion-color-primary);
+    --st-base-color-inactive: var(--ion-color-light-tint);
+    --st-base-color-active: var(--ion-color-primary);
+}
+
+// loading overlay 
+.overlay-wrapper {
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 9999;
+}
+.overlay-container {
+    display: block;
+    float: left;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, .9);
+    position: relative;
+}
+.image-wrapper {
+    display: block;
+    width: 35%;
+    margin: 15% auto 0 auto;
+}
+.image-container {
+    display: block;
+    float: left;
+    width: 100%;
+    background: #222;
+    border-radius: 50%;
+    box-shadow: 0 0 52px;
+}
+.image-container img {
+    display: block;
+    float: left;
+    width: 100%;
+    border-radius: 50%;
+    animation: animateLogo 4s linear infinite;
+}
+@keyframes animateLogo {
+    0%   {box-shadow: 0 0 50px rgba(0, 162, 255, 0.8);}
+    20%  {box-shadow: 0 0 40px rgba(132, 0, 255, 0.8);}
+    40%  {box-shadow: 0 0 50px rgba(255, 0, 0, 0.8);}
+    60%  {box-shadow: 0 0 40px rgba(255, 123, 0, 0.8);}
+    80%  {box-shadow: 0 0 50px rgba(255, 217, 0, 0.8);}
+    100% {box-shadow: 0 0 45px rgba(0, 162, 255, 0.8);}
+}
+.info-container {
+    display: block;
+    float: left;
+    width: 80%;
+    margin: 10%;
+    text-align: center;
+    font-size: 22px;
+}
+
