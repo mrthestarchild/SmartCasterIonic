@@ -13,7 +13,7 @@
 </ion-header>
 <div class="main-nav-wrapper">
   <div class="main-nav-container">
-    <super-tabs scollable [config]="superTabsConfig" activeTabIndex="2">
+    <super-tabs scollable [config]="superTabsConfig" activeTabIndex="0">
       <super-tabs-toolbar slot="top" color="accent">
         <!-- <super-tab-button>
           <ion-label>Test</ion-label>    
@@ -38,25 +38,27 @@
         <!-- <super-tab>
           <app-test class="super-tab-wrapper"></app-test>
         </super-tab> -->
-        <super-tab>
+        <super-tab noScroll>
           <app-mixer class="super-tab-wrapper"></app-mixer>
         </super-tab>
-        <super-tab>
+        <super-tab noScroll>
           <app-add-commercial class="super-tab-wrapper"></app-add-commercial>
         </super-tab>
-        <super-tab>
+        <super-tab noScroll>
           <app-add-pad class="super-tab-wrapper"></app-add-pad>
         </super-tab>
-        <super-tab>
+        <super-tab noScroll>
           <app-web-browser class="super-tab-wrapper"></app-web-browser>
         </super-tab>
-        <super-tab>
+        <super-tab noScroll>
           <app-settings class="super-tab-wrapper"></app-settings>
         </super-tab>
       </super-tabs-container>
     </super-tabs>
   </div>
 </div>
+<audio hidden id="pad-audio" preload="auto" src=""></audio>
+<audio hidden id="commercial-audio" preload="auto" src=""></audio>
 <div class="overlay-wrapper" [@showMainLoading]="showMainLoading">
   <div class="overlay-container">
     <div class="image-wrapper">

@@ -1,4 +1,5 @@
-import { Component, NgZone, OnInit } from '@angular/core';
+import { Component, Host, NgZone, OnInit, EventEmitter } from '@angular/core';
+import { MatSliderChange } from '@angular/material/slider';
 import { ModalController } from '@ionic/angular';
 import { ChannelColor } from 'src/models/channel-color.model';
 import { ChannelData } from 'src/models/channel-data.model';
@@ -8,10 +9,12 @@ import { MixerKnob } from 'src/models/mixer-knob.model';
 import { Mixer } from 'src/models/mixer.model';
 import { LoginResponse } from 'src/models/response/login-response.model';
 import { SoundLevelResponse } from 'src/models/response/sound-level-response.model';
+import { SpotResponse } from 'src/models/response/spot-response.model';
 import { UserAccountService } from 'src/services/account.service';
 import { UtilsService } from 'src/services/utils.service';
 import { SessionIdentifiers } from 'src/utils/session-identifiers.enum';
 import { ChannelOptionsModalComponent } from '../channel-options-modal/channel-options-modal.component';
+import { MainNavigationPage } from '../main-navigation/main-navigation.page';
 
 @Component({
   selector: 'app-mixer',
@@ -19,6 +22,8 @@ import { ChannelOptionsModalComponent } from '../channel-options-modal/channel-o
   styleUrls: ['./mixer.component.scss'],
 })
 export class MixerComponent implements OnInit {
+
+  _mainNav: MainNavigationPage;
 
   userInfo: LoginResponse;
   selectedPadCollectionIndex: number = 0;
@@ -32,12 +37,14 @@ export class MixerComponent implements OnInit {
   constructor(private _userAccountService: UserAccountService,
               private _utilsService: UtilsService,
               private _ngZone: NgZone,
-              private _modal: ModalController) {
+              private _modal: ModalController,
+              @Host() mainNav: MainNavigationPage) {
+    this._mainNav = mainNav;
     this._userAccountService.userInfo$.subscribe(result =>{
       this.userInfo = result;
     });
     if(!this.userInfo){
-      this.userInfo = JSON.parse(localStorage.getItem(SessionIdentifiers.UserAccoutInfo));
+      this.userInfo = this._userAccountService.GetSavedUserAccountInfo();
       this.CheckForSoundLevelCollection();
     }
   }
@@ -93,8 +100,8 @@ export class MixerComponent implements OnInit {
     }
   }
 
-  TurnEqKnob(event: HammerEvent<HTMLImageElement>, containerIndex: number, index: number){
-    let mixerLocation = document.getElementById(`eqKnob${containerIndex}${index}`);
+  TurnEqKnob(event: HammerEvent<HTMLImageElement>, containerIndex: number, channelIndex: number){
+    let mixerLocation = document.getElementById(`eqKnob${containerIndex}${channelIndex}`);
     if (event.type == 'pan' && event.isFirst == false && event.isFinal == false) // panning
     {
       mixerLocation = this.SetDegressCalc(mixerLocation, -((event.deltaY)/4));
@@ -104,8 +111,47 @@ export class MixerComponent implements OnInit {
       else if(this.GetDegreeCalc(mixerLocation) >= 280){
         mixerLocation.style.transform = "rotate(280deg)";
       }
-
-      this.selectedSoundLevel.MixerChannelsJson.Channels[containerIndex].MixerKnobs[index].CurrentVolume = Math.round(((this.GetDegreeCalc(mixerLocation)) / 9.3) - 15);
+      let eqValue = ((this.GetDegreeCalc(mixerLocation)) / 9.3) - 15;
+      this.selectedSoundLevel.MixerChannelsJson.Channels[containerIndex].MixerKnobs[channelIndex].CurrentVolume = Math.round(eqValue);
+      
+      switch (containerIndex) {
+        case 0:
+          break;
+        case 1:
+          break;
+        case 2:
+          break;
+        case 3:
+          break;
+        case 4:
+          switch (channelIndex) {
+            case 0:
+              this._mainNav.commercialTrebleEqNode.gain.value = eqValue * 2;
+              break;
+            case 1:
+              this._mainNav.commercialMidEqNode.gain.value = eqValue * 2;
+              break;
+            case 2:
+              this._mainNav.commercialBassEqNode.gain.value = eqValue * 2;
+              break;
+          }
+          break;
+        case 5:
+          switch (channelIndex) {
+            case 0:
+              this._mainNav.padTrebleEqNode.gain.value = eqValue * 2;
+              break;
+            case 1:
+              this._mainNav.padMidEqNode.gain.value = eqValue * 2;
+              break;
+            case 2:
+              this._mainNav.padBassEqNode.gain.value = eqValue * 2;
+              break;
+          }
+          break;
+        default:
+          break;
+      }
       // write check to see if player if playing first before setting value
       // let eqLevel = this.selectedSoundLevel.MixerChannels.Channels[containerIndex].MixerKnobs[index].CurrentVolume * 100;
       // this.SetEqValueInMixer(containerIndex, index, eqLevel, this.eqOptionsList[containerIndex]);
@@ -134,9 +180,41 @@ export class MixerComponent implements OnInit {
     return element;
   }
 
-  ToggleMuteButton(channel: Channel){
+  UpdateVolume(event: MatSliderChange, channelIndex: number, channel: Channel){
+    switch (channelIndex) {
+      case 0:
+        break;
+      case 1:
+        break;
+      case 2:
+        break;
+      case 3:
+        break;
+      case 4:
+        if(!channel.IsMuted)
+          this._mainNav.commercialGainNode.gain.value = event.value;
+        break;
+      case 5:
+        if(!channel.IsMuted)
+          this._mainNav.padGainNode.gain.value = event.value;
+        break;
+      default:
+        break;
+    }
+  }
+
+  ToggleMuteButton(channel: Channel, channelIndex: number){
     this._ngZone.run(() =>{
       channel.IsMuted = !channel.IsMuted;
+      switch (channelIndex) {
+        case 4:
+          this._mainNav.commercialGainNode.gain.value = channel.IsMuted ? 0 : channel.CurrentVolume;
+        case 5:
+          this._mainNav.padGainNode.gain.value = channel.IsMuted ? 0 : channel.CurrentVolume;
+          break;
+        default:
+          break;
+      }
     });
   }
 

@@ -23,6 +23,8 @@ import {MatSelectModule} from '@angular/material/select';
 import 'hammerjs';
 import { ChannelOptionsModalComponent } from '../channel-options-modal/channel-options-modal.component';
 import { LogoutModalComponent } from '../logout-modal/logout-modal.component';
+import { PipesModule } from '../pipes.module';
+import { AudioPlayerComponent } from '../audio-player/audio-player.component';
 
 @NgModule({
   imports: [
@@ -35,7 +37,8 @@ import { LogoutModalComponent } from '../logout-modal/logout-modal.component';
     SuperTabsModule,
     DragDropModule,
     MatSliderModule,
-    MatSelectModule
+    MatSelectModule,
+    PipesModule
   ],
   declarations: [
     MainNavigationPage,
@@ -47,6 +50,7 @@ import { LogoutModalComponent } from '../logout-modal/logout-modal.component';
     AddPadModalComponent,
     ChannelOptionsModalComponent,
     LogoutModalComponent,
+    AudioPlayerComponent,
     TestComponent
   ],
   providers:[

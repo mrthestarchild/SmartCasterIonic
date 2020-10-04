@@ -44,7 +44,23 @@ import { SessionIdentifiers } from 'src/utils/session-identifiers.enum';
         )),
       transition('true => false', animate('500ms')),
       transition('false => true', animate('500ms'))
-    ])
+    ]),
+      trigger('showMainLoading', [
+        state('true', style(
+          { 
+            opacity: 1,
+            "z-index": "*"
+          })
+        ),
+        state('false', style(
+          { 
+            opacity: 0,
+            "z-index": "-1"
+          })
+        ),
+        transition('true => false', animate('1000ms')),
+        transition('false => true', animate('1000ms'))
+      ]),
   ]
 })
 export class HomePage {
@@ -53,6 +69,8 @@ export class HomePage {
   showLogin: boolean = true;
   changeColor: boolean = true;
   hideLogo: Animation;
+  loadingInfoMessage: string = "";
+  showMainLoading: boolean = false;
 
   constructor(private _animationController: AnimationController,
               private _router: Router,

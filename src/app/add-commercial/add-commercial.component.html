@@ -3,13 +3,15 @@
     <div class="add-commercial-main">
       <div class="create-commercial-wrapper">
         <div class="create-commercial-container">
-          <ion-button [hidden]="!hasNoCommercialsLoaded" class="no-commericals-button" expand="block" color="light" (click)="CreateNewCommercial()">
-            You have no commercials, please tap here to create your first commercial
-          </ion-button>
+          <ion-item [hidden]="!hasNoCommercialsLoaded" lines="none" color="secondary" >
+            <ion-label class="no-commericals-button ion-text-wrap center center-padding" (click)="CreateNewCommercial()">
+              You have no commercials loaded, please tap here to create your first commercial or tap a commercial to load it.
+            </ion-label>
+          </ion-item>
           <div class="commercial-list-wrapper" [hidden]="hasNoCommercialsLoaded">
-            <div class="commercial-list-container">
+            <div class="commercial-list-container" >
               <ion-item class="commercial-name-input" color="dark">
-                <ion-input color="primary" clearInput placeholder="Enter Commercial Name" value="{{selectedSpotCollection.Name}}"></ion-input>
+                <ion-input #commercialName color="primary" clearInput placeholder="Enter Commercial Name" [(ngModel)]="selectedSpotCollection.Name" value="{{selectedSpotCollection.Name}}"></ion-input>
               </ion-item>
               <ion-list class="commercial-list drag-box"
                  cdkDropList
@@ -20,7 +22,7 @@
                  (cdkDropListDropped)="Drop($event)" >
                 <div class="drag-item-placeholder" *cdkDragPlaceholder></div>
                 <ion-item cdkDrag class="drag-list" color="dark" *ngFor="let spot of selectedSpotCollection.SpotList">
-                  {{spot.Name}}: {{spot.DurationMinutes}}
+                  {{spot.Name}}: {{spot.DurationMinutes | convertSecondsForView}}
                   <div class="drag-handle-behind" cdkDragHandle>
                     <svg width="24px" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"></path>
@@ -34,20 +36,20 @@
                   <ion-button color="danger" (click)="CancelCreateCommercial()">Cancel</ion-button>
                 </div>
                 <div class="add-commercial-submit" color="dark">
-                  <ion-button color="success">Save</ion-button>
+                  <ion-button color="success" (click)="SaveCommercial(selectedSpotCollection)">Save</ion-button>
                 </div>
               </div>
             </div>
           </div>
-          <audio *ngIf="!hasNoCommercialsLoaded" class="audio-player" controls src="../../assets/audio-test/bensound-dubstep.mp3">
-          Your browser does not support the audio element.
-          </audio>
+          <app-audio-player [hidden]="hasNoCommercialsLoaded"></app-audio-player>
         </div>
       </div>
     </div>
     <div class="add-commercial-files">
       <div class="spot-files">
-        <h2 class="add-commercial-label">Spots</h2>
+        <ion-item lines="none" color="primary">
+          <ion-label class="bold center">Spots</ion-label>
+        </ion-item>
         <ion-list class="file-list drag-box"
               cdkDropList
               id="spotItemList"
@@ -59,8 +61,8 @@
               [cdkDropListEnterPredicate]="NoReturnPredicate">
           <div class="drag-item-placeholder" *cdkDragPlaceholder></div>
           <ion-item cdkDrag class="drag-list" color="dark" *ngFor="let spot of userInfo.Spots">
-            <p class="right-align">{{spot.Name}}</p>
-            <div class="drag-handle-front" cdkDragHandle>
+            <p [ngClass]="{'right-align': !hasNoCommercialsLoaded, 'no-margin': hasNoCommercialsLoaded}" [@addHandle]="hasNoCommercialsLoaded">{{spot.Name}}</p>
+            <div [ngClass]="{'drag-handle-front': !hasNoCommercialsLoaded, 'hide-drag-handle': hasNoCommercialsLoaded}" cdkDragHandle [@handleOpacity]="hasNoCommercialsLoaded">
               <svg width="24px" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"></path>
                 <path d="M0 0h24v24H0z" fill="none"></path>
@@ -70,7 +72,10 @@
         </ion-list>
       </div>
       <div class="commercial-files">
-        <h2 class="add-commercial-label">Commericials</h2>
+        <ion-item lines="none" color="primary">
+          <ion-icon name="add-circle" slot="start" (click)="CreateNewCommercial()"></ion-icon>
+          <ion-label class="bold">Commericials</ion-label>
+        </ion-item>
         <ion-list class="file-list">
           <ng-container class="file" *ngFor="let spot of userInfo.SpotCollections; let i = index">
             <ion-item color="dark" (click)="SelectCommercialToEdit(i)">

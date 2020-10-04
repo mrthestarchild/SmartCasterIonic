@@ -1,0 +1,13 @@
+<div class="audio-player-container" *ngIf="selectedSpotCollection && localAudioElement">
+  <ion-item lines="none" class="audio-player-view">
+    <ion-text slot="start">{{currectTimePlayed | convertSecondsForView}}</ion-text>
+    <ion-range disabled min="0" [max]="GetTotalSpotCollectionTime()" [value]="currectTimePlayed" ></ion-range>
+    <ion-text slot="end">{{GetTotalSpotCollectionTime() | convertSecondsForView }}</ion-text>
+  </ion-item>
+  <ion-item lines="none" class="audio-player-controls">
+    <ion-icon name="play-back" [ngClass]="{'disabled-icon' : currentIndex == 0}" slot="start" (click)="PlayPreviousTrack()"></ion-icon>
+    <ion-icon name="play" *ngIf="localAudioElement.paused" class="center-icon" (click)="PlayPausePlayer()"></ion-icon>
+    <ion-icon name="pause" *ngIf="!localAudioElement.paused" class="center-icon" (click)="PlayPausePlayer()"></ion-icon>
+    <ion-icon name="play-forward" [ngClass]="{'disabled-icon' : currentIndex == spotCollectionLength}" slot="end" (click)="PlayNextTrack()"></ion-icon>
+  </ion-item>
+</div>

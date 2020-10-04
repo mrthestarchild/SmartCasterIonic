@@ -2,7 +2,7 @@ import { Component, OnInit, AfterViewInit, NgZone, Host } from '@angular/core';
 import { UserAccountService } from 'src/services/account.service';
 import { LoginResponse } from 'src/models/response/login-response.model';
 import { SpotResponse } from 'src/models/response/spot-response.model';
-import { ModalController, AlertController } from '@ionic/angular';
+import { ModalController, AlertController, Platform } from '@ionic/angular';
 import { AddPadModalComponent } from '../add-pad-modal/add-pad-modal.component';
 import { AddPad } from 'src/models/add-pad.model';
 import { StatusCode } from 'src/utils/status-code.enum';
@@ -19,6 +19,7 @@ import { PadCollectionResponse } from 'src/models/response/pad-collection-respon
 import * as moment from 'moment';
 import { SessionIdentifiers } from 'src/utils/session-identifiers.enum';
 import { Capacitor, FilesystemDirectory, FilesystemEncoding } from '@capacitor/core';
+import { Media } from '@ionic-native/media/ngx';
 
 @Component({
   selector: 'app-add-pad',
@@ -39,6 +40,8 @@ export class AddPadComponent implements OnInit, AfterViewInit {
   currentFilePlaying: SpotResponse;
   audioElement: HTMLAudioElement;
 
+  gainNode: GainNode;
+
 
   constructor(private _userAccountService: UserAccountService,
               private _modal: ModalController,
@@ -47,14 +50,15 @@ export class AddPadComponent implements OnInit, AfterViewInit {
               private _ngZone: NgZone,
               private _spotService: PadSpotCollectionService,
               private _utilsService: UtilsService,
-              private _audioService: AudioService,
               @Host() mainNav: MainNavigationPage ) {
     this._mainNav = mainNav;
     this._userAccountService.userInfo$.subscribe(result =>{
-      this.userInfo = result;
+      if(result){
+        this.userInfo = result;
+      }
     });
     if(!this.userInfo){
-      this.userInfo = JSON.parse(localStorage.getItem(SessionIdentifiers.UserAccoutInfo));
+      this.userInfo = this._userAccountService.GetSavedUserAccountInfo();
     }
     if(this.userInfo.PadCollections == null || this.userInfo.PadCollections.length == 0){
       this.userInfo.PadCollections = new Array<PadCollectionResponse>();
@@ -66,6 +70,7 @@ export class AddPadComponent implements OnInit, AfterViewInit {
       padCollection.SpotList = new Array<SpotResponse>();
       this.userInfo.PadCollections.push(padCollection);
       this._userAccountService.SaveUserAccountInfo(this.userInfo);
+      console.error("Pad Collection Check on add-pad, We should never hit this again");
     }
   }
  
@@ -78,33 +83,21 @@ export class AddPadComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(){
     this.audioElement = document.querySelector('audio');
     let track = this.audioContext.createMediaElementSource(this.audioElement);
-    track.connect(this.audioContext.destination);
+    this.gainNode = this.audioContext.createGain();
+    track.connect(this.gainNode).connect(this.audioContext.destination);
     if(this.audioContext.state == 'suspended'){
       this.audioContext.resume();
     }
   }
 
   /**
-   * Plays Audio associated with Pad
+   * Plays Audio associated with Pad from main component
    * @param fileInfo 
    */
-  async PlayAudioFile(fileInfo: SpotResponse, index: number){
-    if(this.currentFilePlaying != fileInfo){
-      let mediaInfo = await this._audioService.ConvertFilePathToBlob(fileInfo.Uri);
-      this.currentFilePlaying = fileInfo;
-      this.audioElement.src = mediaInfo.AudioObjectUrl;
-      this.audioElement.currentTime = 0;
-      this.audioElement.play();
-    }
-    else{
-      if(!this.audioElement.paused){
-        this.audioElement.pause();
-      }
-      else{
-        this.audioElement.play();
-      }
-    }
+  PlayAudioFile(fileInfo: SpotResponse){
+    this._mainNav.PlayPadAudioFile(fileInfo);
   }
+  
 
   public async OpenAddModal(){
     const modal = await this._modal.create({
@@ -162,10 +155,10 @@ export class AddPadComponent implements OnInit, AfterViewInit {
         let writenFile = await Capacitor.Plugins.Filesystem.writeFile({
           data: readFile.data,
           path: fileNameWithExt,
-          directory: FilesystemDirectory.Data
+          directory: FilesystemDirectory.ExternalStorage
         });
         let newUri = await Capacitor.Plugins.Filesystem.getUri({
-          directory: FilesystemDirectory.Data,
+          directory: FilesystemDirectory.ExternalStorage,
           path: fileNameWithExt
         });
         filePath = newUri.uri;
@@ -181,7 +174,7 @@ export class AddPadComponent implements OnInit, AfterViewInit {
         newSpot.FileTypeId = fileInfo.FileTypeId;
         newSpot.Name = fileInfo.FileName;
         newSpot.Id = -1;
-        newSpot.DurationMinutes = this._spotService.ConvertDuration(fileDuration);
+        newSpot.DurationMinutes = fileDuration;
         this._ngZone.run(() =>{
           this.userInfo.Spots.push(newSpot);
         });
@@ -204,4 +197,5 @@ export class AddPadComponent implements OnInit, AfterViewInit {
       await alertError.present();
     }
   }
+
 }

@@ -18,7 +18,7 @@ export class SettingsComponent implements OnInit {
       this.userInfo = result;
     });
     if(!this.userInfo){
-      this.userInfo = JSON.parse(localStorage.getItem(SessionIdentifiers.UserAccoutInfo));
+      this.userInfo = this._userAccountService.GetSavedUserAccountInfo();
     }
   }
 

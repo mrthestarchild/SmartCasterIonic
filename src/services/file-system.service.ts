@@ -1,4 +1,4 @@
-import { Injectable, ViewContainerRef } from '@angular/core';
+import { Injectable, NgZone, ViewContainerRef } from '@angular/core';
 import { LoginResponse } from 'src/models/response/login-response.model';
 import { FileTypeListResponse } from 'src/models/file-type-list-response.model';
 import { FileSystemAudio } from 'src/models/file-system-audio.model';
@@ -9,7 +9,7 @@ import { LocalServiceResponse } from 'src/models/response/local-service-response
 import { StatusCode } from 'src/utils/status-code.enum';
 import { HttpClient } from '@angular/common/http';
 import { File } from '@ionic-native/file/ngx';
-import { Capacitor } from '@capacitor/core';
+import { Capacitor, FilesystemDirectory } from '@capacitor/core';
 import { Media, MediaObject } from '@ionic-native/media/ngx';
 import { SessionIdentifiers } from 'src/utils/session-identifiers.enum';
 
@@ -24,6 +24,7 @@ export class FileSystemService {
   constructor(private filePicker: Chooser,
               private _http: HttpClient,
               private _file: File,
+              private _ngZone: NgZone,
               private _media: Media) {
     const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
     this.fileServiceAudioContext = new AudioContext();
@@ -93,6 +94,37 @@ export class FileSystemService {
         }
       }, 10);
     });
+  }
+
+  ValidateSpotListUri(spots: Array<SpotResponse>): Promise<Array<SpotResponse>>{
+    return new Promise(async (resolve, reject) =>{
+        for(let x = 0; x < spots.length; x++){
+          await Capacitor.Plugins.Filesystem.stat({
+            path: spots[x].Uri
+          }).then(file =>{ 
+            spots[x].CanResolveUri = true;
+          }).catch(async error =>{
+            spots[x] = await this.UpdateSpotUriWithFoundLocation(spots[x]);
+          });
+        }
+        resolve(spots);
+    });
+    
+  }
+
+  async UpdateSpotUriWithFoundLocation(spot: SpotResponse): Promise<SpotResponse>{
+      let testName = spot.Uri.substring(spot.Uri.lastIndexOf("/") + 1);
+      return await Capacitor.Plugins.Filesystem.stat({
+                        directory: FilesystemDirectory.Documents,
+                        path: testName
+                      }).then(file =>{ 
+                        spot.Uri = file.uri;
+                        spot.CanResolveUri = true;
+                        return spot;
+                      }).catch(error =>{
+                        spot.CanResolveUri = false;
+                        return spot;
+                      });
   }
 
 }

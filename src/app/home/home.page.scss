@@ -67,3 +67,50 @@ ion-toolbar.nav-bar-background{
   80%  {box-shadow: 0 0 50px rgba(255, 217, 0, 0.8);}
   100% {box-shadow: 0 0 45px rgba(0, 162, 255, 0.8);}
 }
+
+// loading overlay 
+.overlay-wrapper {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: 9999;
+}
+.overlay-container {
+  display: block;
+  float: left;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, .9);
+  position: relative;
+}
+.image-wrapper {
+  display: block;
+  width: 35%;
+  margin: 15% auto 0 auto;
+}
+.image-container {
+  display: block;
+  float: left;
+  width: 100%;
+  background: #222;
+  border-radius: 50%;
+  box-shadow: 0 0 52px;
+}
+.image-container img {
+  display: block;
+  float: left;
+  width: 100%;
+  border-radius: 50%;
+  animation: animateLogo 4s linear infinite;
+}
+
+.info-container {
+  display: block;
+  float: left;
+  width: 80%;
+  margin: 10%;
+  text-align: center;
+  font-size: 22px;
+}
+

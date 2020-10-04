@@ -15,7 +15,7 @@
             <div class="mixer-options-container"
                  id="channelView{{i}}"
                  [style.background]="mixer.ChannelColor"
-                 (tap)="ToggleMuteButton(mixer)"
+                 (tap)="ToggleMuteButton(mixer, i)"
                  (press)="OpenMixerMenu(mixer)">
               <div class="mixer-options-icon">
                 <ion-icon size="large" name="{{mixer.ChannelIconName}}"></ion-icon>
@@ -31,7 +31,7 @@
           <div class="slider-wrapper">
             <div class="slider-container">
               <div class="mixer-slider-container">
-                  <mat-slider class="mixer-slider" (pan)="Log()" vertical></mat-slider>
+                  <mat-slider class="mixer-slider" min="0" max="2" step="0.01" (pan)="Log()" (input)="UpdateVolume($event, i, mixer)" [(ngModel)]="mixer.CurrentVolume" vertical></mat-slider>
               </div>
             </div>
           </div>

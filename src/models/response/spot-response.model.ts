@@ -17,5 +17,6 @@ export class SpotResponse {
     public DateGainAuto: Date;
     public GainManual: string;
     public DurationMinutes: number;
+    public CanResolveUri: boolean = false;
     public Setting: SpotSetting = new SpotSetting();
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, ElementRef } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, ElementRef, Host, NgZone } from '@angular/core';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { LoginRequest } from 'src/models/request/login-request.model';
 import { AuthenticationService } from 'src/services/authentication.service';
@@ -7,6 +7,13 @@ import { GlobalService } from 'src/services/global.service';
 import { Router } from '@angular/router';
 import { StatusCode } from 'src/utils/status-code.enum';
 import { SessionIdentifiers } from 'src/utils/session-identifiers.enum';
+import { LoginResponse } from 'src/models/response/login-response.model';
+import { FileSystemService } from 'src/services/file-system.service';
+import { HomePage } from '../home/home.page';
+import { hostViewClassName } from '@angular/compiler';
+import { CommercialPlayerService } from 'src/services/commercial-player.service';
+import { UtilsService } from 'src/services/utils.service';
+import { SpotCollectionResponse } from 'src/models/response/spot-collection-response.model';
 
 @Component({
   selector: 'app-login',
@@ -14,6 +21,8 @@ import { SessionIdentifiers } from 'src/utils/session-identifiers.enum';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
+
+  _homePage: HomePage;
 
   @Output() isLoggedIn = new EventEmitter<boolean>();
   loginForm: FormGroup;
@@ -27,7 +36,13 @@ export class LoginComponent implements OnInit {
               private _userAccountService: UserAccountService,
               private _globalService: GlobalService,
               private _router: Router,
-              private _fb: FormBuilder) {
+              private _fb: FormBuilder,
+              private _fileService: FileSystemService,
+              private _commercialService: CommercialPlayerService,
+              private _ngZone: NgZone,
+              private _utilsService: UtilsService,
+              @Host() homePage: HomePage) {
+    this._homePage = homePage;
               }
 
   ngOnInit(): void {
@@ -49,6 +64,7 @@ export class LoginComponent implements OnInit {
   }
 
   SubmitLogin() {
+    this._homePage.showMainLoading = true;
     this.loginLoading = true;
     this.ClearFormStatus();
 
@@ -63,30 +79,53 @@ export class LoginComponent implements OnInit {
       this._globalService.UnsetRememberUsername();
     }
 
-    this._authService.RequestLogin(this.payload).subscribe(result => {
+    this._authService.RequestLogin(this.payload).subscribe(async result => {
       if (result.StatusCode === StatusCode.Success) {
-        this._userAccountService.SaveUserAccountInfo(result.Data);
+        // this._userAccountService.SaveUserAccountInfo(result.Data);
+        let userInfo = await this.InitApplication(result.Data);
+        this._userAccountService.SaveUserAccountInfo(userInfo);
+        this._commercialService.SetCommercial(userInfo.SpotCollections[0]);
         this._globalService.LogInUser(true);
         this.loginForm.reset();
         this.loginLoading = false;
+        this._homePage.showMainLoading = false;
         this._router.navigateByUrl('/main-navigation');
       } else if (result.StatusCode === StatusCode.UserNotFound || result.StatusCode === StatusCode.InvalidPassword) {
         this.showError = true;
         this.errorText = result.StatusMessage;
         this.loginLoading = false;
+        this._homePage.showMainLoading = false;
       }
       else{
         this.showError = true;
         this.errorText = result.StatusMessage;
         this.loginLoading = false;
+        this._homePage.showMainLoading = false;
       }
     },((error: any)=>{
       console.error(error);
       this.showError = true;
       this.errorText = "An unknown Error occured";
       this.loginLoading = false;
+      this._homePage.showMainLoading = false;
       })
     );
+  }
+
+  InitApplication(userInfo: LoginResponse): Promise<LoginResponse>{
+    return new Promise(async (resolve, reject) => {
+        this._homePage.loadingInfoMessage = "Checking File System paths";
+        userInfo.Spots = await this._fileService.ValidateSpotListUri(userInfo.Spots);
+        this._homePage.loadingInfoMessage = "Checking Commercials";
+        for(let x = 0; x < userInfo.SpotCollections.length; x++){
+          userInfo.SpotCollections[x].SpotList = await this._fileService.ValidateSpotListUri(userInfo.SpotCollections[x].SpotList);
+        }
+        this._homePage.loadingInfoMessage = "Checking Pads";
+        for(let x = 0; x < userInfo.PadCollections.length; x++){
+          userInfo.PadCollections[x].SpotList = await this._fileService.ValidateSpotListUri(userInfo.PadCollections[x].SpotList);
+        }
+        resolve(userInfo);
+    });
   }
 
   GoToNext(element){

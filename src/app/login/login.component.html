@@ -19,7 +19,7 @@
           <ion-checkbox slot="start" color="primary" formControlName="rememberUser"></ion-checkbox>
         </ion-item>
         <ion-spinner *ngIf="loginLoading"></ion-spinner>
-        <ion-button #submit [disabled]="loginForm.invalid" class="half-width" expand="full" shape="round" color="primary" type="submit">Sign In</ion-button>
+        <ion-button #submit  *ngIf="!loginLoading" [disabled]="loginForm.invalid" class="half-width" expand="full" shape="round" color="primary" type="submit">Sign In</ion-button>
         <p *ngIf="showError" >{{errorText}}</p>
       </form>
     </div>

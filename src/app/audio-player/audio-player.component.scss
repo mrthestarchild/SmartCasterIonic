@@ -1,0 +1,15 @@
+// Audio stuffs
+.audio-player-view{
+    --background: transparent;
+}
+.audio-player-controls{
+    --background: transparent;
+    width: 100%;
+}
+.audio-player-controls .center-icon{
+    width: 100%;
+    text-align: center;
+}
+.disabled-icon{
+    color: rgba(255,255,255,.5);
+}

@@ -6,6 +6,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
+import { Device } from '@ionic-native/device/ngx';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -21,6 +22,7 @@ import { File } from '@ionic-native/file/ngx';
 import { Media } from '@ionic-native/media/ngx';
 import { MatSliderModule } from '@angular/material/slider';
 import { HammerjsConfig } from './hammerjs-config.model';
+import { PipesModule } from './pipes.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -45,6 +47,7 @@ import { HammerjsConfig } from './hammerjs-config.model';
     Keyboard,
     File,
     Media,
+    Device,
     { provide: HTTP_INTERCEPTORS, useClass: SmartCasterInterceptor, multi: true },
     { provide: HAMMER_GESTURE_CONFIG, useClass: HammerjsConfig },
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
