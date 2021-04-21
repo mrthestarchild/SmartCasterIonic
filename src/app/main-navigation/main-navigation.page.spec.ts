@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
 import { MainNavigationPage } from './main-navigation.page';
@@ -7,7 +7,7 @@ describe('MainNavigationPage', () => {
   let component: MainNavigationPage;
   let fixture: ComponentFixture<MainNavigationPage>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ MainNavigationPage ],
       imports: [IonicModule.forRoot()]

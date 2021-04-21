@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
 import { WebBrowserComponent } from './web-browser.component';
@@ -7,7 +7,7 @@ describe('WebBrowserComponent', () => {
   let component: WebBrowserComponent;
   let fixture: ComponentFixture<WebBrowserComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ WebBrowserComponent ],
       imports: [IonicModule.forRoot()]

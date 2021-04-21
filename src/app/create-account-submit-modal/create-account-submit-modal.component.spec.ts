@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
 import { CreateAccountSubmitModalComponent } from './create-account-submit-modal.component';
@@ -7,7 +7,7 @@ describe('CreateAccountSubmitModalComponent', () => {
   let component: CreateAccountSubmitModalComponent;
   let fixture: ComponentFixture<CreateAccountSubmitModalComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ CreateAccountSubmitModalComponent ],
       imports: [IonicModule.forRoot()]

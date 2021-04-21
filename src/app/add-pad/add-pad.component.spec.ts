@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
 import { AddPadComponent } from './add-pad.component';
@@ -7,7 +7,7 @@ describe('AddPadComponent', () => {
   let component: AddPadComponent;
   let fixture: ComponentFixture<AddPadComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ AddPadComponent ],
       imports: [IonicModule.forRoot()]
