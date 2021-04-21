@@ -1,14 +1,11 @@
 import { Injectable, NgZone, ViewContainerRef } from '@angular/core';
-import { LoginResponse } from 'src/models/response/login-response.model';
 import { FileTypeListResponse } from 'src/models/file-type-list-response.model';
-import { FileSystemAudio } from 'src/models/file-system-audio.model';
 import { SpotResponse } from 'src/models/response/spot-response.model';
 import { SplitFileItems } from 'src/models/split-file-items.model';
 import { ChooserResult, Chooser } from '@ionic-native/chooser/ngx';
 import { LocalServiceResponse } from 'src/models/response/local-service-response.model';
 import { StatusCode } from 'src/utils/status-code.enum';
 import { HttpClient } from '@angular/common/http';
-import { File } from '@ionic-native/file/ngx';
 import { Capacitor, FilesystemDirectory } from '@capacitor/core';
 import { Media, MediaObject } from '@ionic-native/media/ngx';
 import { SessionIdentifiers } from 'src/utils/session-identifiers.enum';
@@ -23,7 +20,6 @@ export class FileSystemService {
   
   constructor(private filePicker: Chooser,
               private _http: HttpClient,
-              private _file: File,
               private _ngZone: NgZone,
               private _media: Media) {
     const AudioContext = window.AudioContext || (window as any).webkitAudioContext;

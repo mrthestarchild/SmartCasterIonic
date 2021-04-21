@@ -1,6 +1,8 @@
 ion-header.nav-bar {
     height: 20vh;
     min-height: 153px;
+    position: relative;
+    z-index: 1;
 }
 ion-toolbar.nav-bar-background{
     height: 100%;
@@ -37,6 +39,7 @@ ion-toolbar.nav-bar-background{
     height: 80vh;
     margin: auto;
     position: relative;
+    z-index: 1;
 }
 .main-nav-container {
     display: block;

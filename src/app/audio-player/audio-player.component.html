@@ -1,5 +1,9 @@
 <div class="audio-player-container" *ngIf="selectedSpotCollection && localAudioElement">
   <ion-item lines="none" class="audio-player-view">
+    <ion-text *ngIf="selectedSpotCollection.SpotList.length > 0" class="now-playing"><span class="now-playing-label">Now Playing:</span> {{selectedSpotCollection.SpotList[currentIndex].Name || "No Files Loaded"}}</ion-text>
+    <ion-text *ngIf="selectedSpotCollection.SpotList.length == 0" class="now-playing"><span class="now-playing-label">No Files Loaded</span></ion-text>
+  </ion-item>
+  <ion-item lines="none" class="audio-player-view">
     <ion-text slot="start">{{currectTimePlayed | convertSecondsForView}}</ion-text>
     <ion-range disabled min="0" [max]="GetTotalSpotCollectionTime()" [value]="currectTimePlayed" ></ion-range>
     <ion-text slot="end">{{GetTotalSpotCollectionTime() | convertSecondsForView }}</ion-text>

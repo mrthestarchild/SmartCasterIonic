@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { Subject } from 'rxjs';
 import { SpotCollectionResponse } from 'src/models/response/spot-collection-response.model';
@@ -25,16 +25,16 @@ export class CommercialPlayerService {
   audioElement$ = this.audioElement.asObservable();
   localAudioElement: HTMLAudioElement;
 
-  constructor() {
-
+  constructor(private _ngZone: NgZone) {
   }
 
   SetAudioElement(audioElement: HTMLAudioElement){
     this.localAudioElement = audioElement;
     this.audioElement.next(audioElement);
     let file = Capacitor.convertFileSrc(this.localCommercialList.SpotList[this.localCommercialIndex].Uri);
-    console.log("set audio element file src: " +file)
-    this.localAudioElement.src = Capacitor.convertFileSrc(this.localCommercialList.SpotList[this.localCommercialIndex].Uri);
+    // console.log("set audio element file src: " +file)
+    this.localAudioElement.src = file;
+    this.localAudioElement.addEventListener("ended", this.PlayNextTrack.bind(this));
   }
 
   DisplayCurrentTimePlayed(){
@@ -55,7 +55,9 @@ export class CommercialPlayerService {
       this.localAudioElement.pause();
     }
     else{
-      this.localAudioElement.play();
+      this.localAudioElement.play().catch(err =>{
+        console.error(err);
+      });
     }
   }
 
@@ -77,6 +79,11 @@ export class CommercialPlayerService {
       this.currentCommercialListIndex.next(this.localCommercialIndex);
       this.localAudioElement.play();
     }
+  }
+
+  ResetTimePlayed(){
+    this.localPreviousTimePlayed = 0;
+    this.currectCommercialTimePlayed.next(0);
   }
 
   private GetCalculatedTime(currentIndex: number, spotList: Array<SpotResponse>): number{

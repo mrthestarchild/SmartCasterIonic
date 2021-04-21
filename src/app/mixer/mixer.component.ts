@@ -1,7 +1,6 @@
-import { Component, Host, NgZone, OnInit, EventEmitter } from '@angular/core';
+import { Component, Host, NgZone, OnInit, AfterViewInit } from '@angular/core';
 import { MatSliderChange } from '@angular/material/slider';
 import { ModalController } from '@ionic/angular';
-import { ChannelColor } from 'src/models/channel-color.model';
 import { ChannelData } from 'src/models/channel-data.model';
 import { Channel } from 'src/models/channel.model';
 import { HammerEvent } from 'src/models/hammer-event.interface';
@@ -12,23 +11,30 @@ import { SoundLevelResponse } from 'src/models/response/sound-level-response.mod
 import { SpotResponse } from 'src/models/response/spot-response.model';
 import { UserAccountService } from 'src/services/account.service';
 import { UtilsService } from 'src/services/utils.service';
-import { SessionIdentifiers } from 'src/utils/session-identifiers.enum';
 import { ChannelOptionsModalComponent } from '../channel-options-modal/channel-options-modal.component';
 import { MainNavigationPage } from '../main-navigation/main-navigation.page';
+import { CommercialPlayerService } from 'src/services/commercial-player.service';
+import * as webAudioPeakMeter from 'web-audio-peak-meter';
+import { AudioMeterService } from 'src/services/audio-meter.service';
 
 @Component({
   selector: 'app-mixer',
   templateUrl: './mixer.component.html',
   styleUrls: ['./mixer.component.scss'],
 })
-export class MixerComponent implements OnInit {
+export class MixerComponent implements OnInit, AfterViewInit {
 
   _mainNav: MainNavigationPage;
+  // _onePeakMeter: any;
+  _commercialPeakMeter: any;
+  _padPeakMeter: any;
 
   userInfo: LoginResponse;
   selectedPadCollectionIndex: number = 0;
   showPads: boolean = false;
   selectedSoundLevel: SoundLevelResponse;
+
+  // captureAudioOptions: CaptureAudioOptions;
 
   prevDeltaY: number = 0;
   knobOffset: number = 0;
@@ -38,19 +44,40 @@ export class MixerComponent implements OnInit {
               private _utilsService: UtilsService,
               private _ngZone: NgZone,
               private _modal: ModalController,
+              private _meterService: AudioMeterService,
+              private _commercialService: CommercialPlayerService,
+              // private _mediaCapture: MediaCapture,
               @Host() mainNav: MainNavigationPage) {
     this._mainNav = mainNav;
+    // this._onePeakMeter = new webAudioPeakMeter();
+    this._commercialPeakMeter = new webAudioPeakMeter(); 
+    this._padPeakMeter = new webAudioPeakMeter();
     this._userAccountService.userInfo$.subscribe(result =>{
       this.userInfo = result;
     });
     if(!this.userInfo){
       this.userInfo = this._userAccountService.GetSavedUserAccountInfo();
       this.CheckForSoundLevelCollection();
-    }
+    } 
   }
 
   ngOnInit() {
     
+  }
+
+  ngAfterViewInit(){
+    setTimeout(() =>{
+      // let oneAudioMeter = document.getElementById('meter0');
+      // let oneAudioMeterNode = this._onePeakMeter.createMeterNode(this._mainNav.oneBufferSource, this._mainNav.oneAudioContext);
+      // this._meterService.SetPeakMeter(oneAudioMeterNode, 0);
+      // this._onePeakMeter.createMeter(oneAudioMeter, oneAudioMeterNode, {backgroundColor: "#222"});
+      let commercialMeter = document.getElementById('meter4');
+      let commercialMeterNode = this._commercialPeakMeter.createMeterNode(this._mainNav.commercialSourceNode, this._mainNav.commercialAudioContext);
+      this._commercialPeakMeter.createMeter(commercialMeter, commercialMeterNode, {backgroundColor: "#222"});
+      let padMeter = document.getElementById('meter5');
+      let padMeterNode = this._padPeakMeter.createMeterNode(this._mainNav.padSourceNode, this._mainNav.padAudioContext);
+      this._padPeakMeter.createMeter(padMeter, padMeterNode, {backgroundColor: "#222"});
+    },500);
   }
 
   CheckForSoundLevelCollection(){
@@ -111,12 +138,24 @@ export class MixerComponent implements OnInit {
       else if(this.GetDegreeCalc(mixerLocation) >= 280){
         mixerLocation.style.transform = "rotate(280deg)";
       }
+      // TODO: review this calculation.
       let eqValue = ((this.GetDegreeCalc(mixerLocation)) / 9.3) - 15;
       this.selectedSoundLevel.MixerChannelsJson.Channels[containerIndex].MixerKnobs[channelIndex].CurrentVolume = Math.round(eqValue);
       
       switch (containerIndex) {
         case 0:
-          break;
+          // switch (channelIndex) {
+          //   case 0:
+          //     this._mainNav.oneTrebleEqNode.gain.value = eqValue * 2;
+          //     break;
+          //   case 1:
+          //     this._mainNav.oneMidEqNode.gain.value = eqValue * 2;
+          //     break;
+          //   case 2:
+          //     this._mainNav.oneBassEqNode.gain.value = eqValue * 2;
+          //     break;
+          // }
+          // break;
         case 1:
           break;
         case 2:
@@ -158,6 +197,10 @@ export class MixerComponent implements OnInit {
     }
   }
 
+  /**
+   * Gets Calculation of how to rotate knob on the view
+   * @param element 
+   */
   private GetDegreeCalc(element: HTMLElement): number{
     let stringNumber = element.style.transform.replace('rotate(','').replace('deg)','');
     let returnValue = parseFloat(stringNumber);
@@ -167,6 +210,12 @@ export class MixerComponent implements OnInit {
     console.log("return value: " + returnValue);
     return returnValue;
   }
+
+  /**
+   * Sets Calculation of how to rotate knob on the view
+   * @param element 
+   * @param modifyValue 
+   */
   private SetDegressCalc(element: HTMLElement, modifyValue: number): HTMLElement {
     let elementRotate = this.GetDegreeCalc(element);
     let value = elementRotate + modifyValue;
@@ -180,9 +229,19 @@ export class MixerComponent implements OnInit {
     return element;
   }
 
+  /**
+   * Sets volume for a given channel. Event fired from view
+   * @param event 
+   * @param channelIndex 
+   * @param channel 
+   */
   UpdateVolume(event: MatSliderChange, channelIndex: number, channel: Channel){
     switch (channelIndex) {
       case 0:
+        // if(!channel.IsMuted){
+        //   this._onePeakMeter.setGainDiff(event.value);
+        //   this._mainNav.oneGainNode.gain.value = event.value;
+        // }
         break;
       case 1:
         break;
@@ -191,26 +250,60 @@ export class MixerComponent implements OnInit {
       case 3:
         break;
       case 4:
-        if(!channel.IsMuted)
+        if(!channel.IsMuted){
+          this._commercialPeakMeter.setGainDiff(event.value);
           this._mainNav.commercialGainNode.gain.value = event.value;
+        }
         break;
       case 5:
-        if(!channel.IsMuted)
+        if(!channel.IsMuted){
+          this._padPeakMeter.setGainDiff(event.value);
           this._mainNav.padGainNode.gain.value = event.value;
+        } 
         break;
       default:
         break;
     }
   }
 
+  /**
+   * Handles muting a channel from the view.
+   * @param channel 
+   * @param channelIndex 
+   */
   ToggleMuteButton(channel: Channel, channelIndex: number){
     this._ngZone.run(() =>{
       channel.IsMuted = !channel.IsMuted;
       switch (channelIndex) {
+        case 0:
+          // if(!channel.IsMuted){
+          //   this._mainNav.oneGainNode.gain.value = channel.CurrentVolume;
+          //   this._onePeakMeter.setGainDiff(channel.CurrentVolume);
+          // }
+          // else{
+          //   this._mainNav.commercialGainNode.gain.value = 0;
+          //   this._commercialPeakMeter.setGainDiff(0);
+          // }
+          break;
         case 4:
-          this._mainNav.commercialGainNode.gain.value = channel.IsMuted ? 0 : channel.CurrentVolume;
+          if(!channel.IsMuted){
+            this._mainNav.commercialGainNode.gain.value = channel.CurrentVolume;
+            this._commercialPeakMeter.setGainDiff(channel.CurrentVolume);
+          }
+          else{
+            this._mainNav.commercialGainNode.gain.value = 0;
+            this._commercialPeakMeter.setGainDiff(0);
+          }
+          break;
         case 5:
-          this._mainNav.padGainNode.gain.value = channel.IsMuted ? 0 : channel.CurrentVolume;
+          if(!channel.IsMuted){
+            this._mainNav.padGainNode.gain.value = channel.CurrentVolume;
+            this._padPeakMeter.setGainDiff(channel.CurrentVolume);
+          }
+          else{
+            this._mainNav.padGainNode.gain.value = 0;
+            this._padPeakMeter.setGainDiff(0);
+          }
           break;
         default:
           break;
@@ -218,6 +311,10 @@ export class MixerComponent implements OnInit {
     });
   }
 
+  /**
+   * Toggles pad and commercial view on mixer view
+   * @param value 
+   */
   ToggleUtilityContainer(value: boolean){
     this.showPads = value;
     let commercialContainer = document.getElementById("commercial-container").classList;
@@ -232,6 +329,10 @@ export class MixerComponent implements OnInit {
     }
   }
 
+  /**
+   * Handles a modal for channel changes.
+   * @param channel 
+   */
   async OpenMixerMenu(channel: Channel){
     const modal = await this._modal.create({
       component: ChannelOptionsModalComponent,
@@ -256,6 +357,24 @@ export class MixerComponent implements OnInit {
       }
     })
     return await modal.present(); 
+  }
+
+  /**
+   * Plays audio file on global component
+   * @param fileInfo 
+   */
+  PlayAudioFile(fileInfo: SpotResponse){
+    this._mainNav.PlayPadAudioFile(fileInfo);
+  }
+
+  /**
+   * Sets commercial globally that will be edited throughout application
+   * @param commercialIndex 
+   */
+  SelectCommercialToEdit(commercialIndex: number){
+    this._ngZone.run(() =>{
+      this._commercialService.SetCommercial(this.userInfo.SpotCollections[commercialIndex]);
+    });
   }
 
   Log(){

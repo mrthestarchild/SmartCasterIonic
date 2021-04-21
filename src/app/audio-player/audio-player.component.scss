@@ -13,3 +13,11 @@
 .disabled-icon{
     color: rgba(255,255,255,.5);
 }
+.now-playing{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.now-playing-label {
+    font-weight: bold;
+}

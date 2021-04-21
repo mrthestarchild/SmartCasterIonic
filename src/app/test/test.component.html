@@ -16,17 +16,54 @@
 </ion-header>
   <ion-list> 
     <ion-item *ngFor="let device of devices">
-      <ion-label>
+      <div>
       <h2>{{ device.name || 'Unnamed' }}</h2>
-          {{ device.address }}
-          RSSI: {{ device.rssi }}
-          Advertisement Info: {{device.advertisement}}
+          {{ device.address }} <br>
+          RSSI: {{ device.rssi }} <br>
+          Advertisement Info: <br>
+          <ng-container *ngFor="let ad of device.advertisement | keyvalue">
+            <div>
+              {{ad.key}}:{{ad.value}}
+            </div>
+          </ng-container> <br>
           Status: {{device.status}}
-      </ion-label> 
+        </div> 
     </ion-item>
    </ion-list>  -->
-   <!-- Bluetooth Serial -->
 
+   <!-- BLE -->
+   <!-- <ion-header>
+    <ion-toolbar>
+      <ion-title>
+        BLE Connect
+      </ion-title>
+      <ion-label *ngIf="showScanning">
+        Scanning<ion-spinner name="dots"></ion-spinner>
+      </ion-label>
+      <ion-buttons slot="end">
+        <ion-button (click)="ScanBluetooth()" >
+          Scan
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+    <ion-list> 
+      <ion-item *ngFor="let device of scannedBle">
+        <div>
+        <h2>{{ device.name || 'Unnamed' }}</h2>
+            {{ device.id }} <br>
+            RSSI: {{ device.rssi }} <br>
+            Advertisement Info: <br>
+            <ng-container *ngFor="let ad of device.advertising | keyvalue">
+              <div>
+                {{ad.key}}:{{ad.value}}
+              </div>
+            </ng-container> <br>
+          </div> 
+      </ion-item>
+     </ion-list>  -->
+
+   <!-- Bluetooth Serial -->
   <!-- <ion-header>
     <ion-toolbar>
       <ion-title>
@@ -40,7 +77,7 @@
     </ion-toolbar>
   </ion-header>
   <ion-list> 
-    <ion-item *ngFor="let device of serialDevices">
+    <ion-item *ngFor="let device of pairedDevices">
       <ion-label>
       <h2>{{ device.name || 'Unnamed' }}</h2>
           {{ device.address }}
@@ -74,6 +111,17 @@
     </ion-list>
 </ion-content> -->
 
+<!-- DISCOVER DEVICES TEST -->
+<!-- <ion-button (click)="DiscoverDevices()">Discover device</ion-button>
+{{isInitialized}}
+<div *ngIf="deviceInfoFound">
+  {{deviceInfo.name || "Empty"}} <br>
+  {{deviceInfo.address || "Empty"}} <br>
+  {{deviceInfo.status || "Empty"}} <br>
+  {{deviceInfo.services || "Empty"}}
+</div> -->
+
+
 <!-- FILE EXPLORER TEST -->
 <!-- <ion-content>
   <ion-button (click)="SelectFile()">Choose File</ion-button>
@@ -83,7 +131,7 @@
   Name: {{uri.name || "nothing"}} <br>
   URI: {{uri.uri || "nothing"}}
 </ion-content> -->
-<h2>List 1</h2>
+<!-- <h2>List 1</h2>
 <ion-list class="commercial-list"
                  cdkDropList
                  #createCommercial="cdkDropList"
@@ -91,7 +139,6 @@
                  [cdkDropListConnectedTo]="[spotList]"
                  (cdkDropListDropped)="Drop($event)" >
                 <ion-item cdkDrag color="dark" *ngFor="let spot of testList1">
-                <!-- {{spot.Name}}: {{spot.DurationMinutes}} -->
                 {{spot}}
                 </ion-item>
               </ion-list>
@@ -104,7 +151,6 @@
               (cdkDropListDropped)="Drop($event)">
           <ion-item cdkDrag color="dark" *ngFor="let spot of testList2">
             {{spot}}
-            <!-- {{spot.Name}}: {{spot.DurationMinutes}} -->
           </ion-item>
-        </ion-list>
+        </ion-list> -->
 

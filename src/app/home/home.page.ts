@@ -78,7 +78,7 @@ export class HomePage {
       // TODO: remove after testing?
       let userLoggedIn = JSON.parse(localStorage.getItem(SessionIdentifiers.UserLoggedIn));
       console.log("userLoggedIn: " + userLoggedIn);
-      if(userLoggedIn === true){
+      if(userLoggedIn === true) {
         this._router.navigateByUrl("/main-navigation");
       }
   }

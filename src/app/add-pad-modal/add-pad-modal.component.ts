@@ -2,7 +2,6 @@ import { Component, OnInit, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { SpotResponse } from 'src/models/response/spot-response.model';
 import { AddPad } from 'src/models/add-pad.model';
-import { Keyboard } from '@ionic-native/keyboard/ngx';
 
 @Component({
   selector: 'app-add-pad-modal',
@@ -15,8 +14,7 @@ export class AddPadModalComponent implements OnInit {
   spotColor: string = '#27aae1';
   padData: AddPad = new AddPad();
 
-  constructor(private _modal: ModalController,
-              private _keyboard: Keyboard) { }
+  constructor(private _modal: ModalController) { }
 
   ngOnInit() {
     this.padData.Name = '';

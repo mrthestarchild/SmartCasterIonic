@@ -75,6 +75,11 @@ export class AddCommercialComponent implements OnInit {
     if(!this.userInfo){
       this.userInfo = this._userAccountService.GetSavedUserAccountInfo();
     }
+    this._commercialService.currentCommercialList$.subscribe(commercial =>{
+      if(commercial){
+        this.selectedSpotCollection = commercial;
+      }
+    });
     if(this.userInfo.SpotCollections == null || this.userInfo.SpotCollections.length == 0){
       this.hasNoCommercialsLoaded = true;
     }
@@ -114,7 +119,7 @@ export class AddCommercialComponent implements OnInit {
   SelectCommercialToEdit(commercialIndex: number){
     this._ngZone.run(() =>{
       this.selectedSpotCollectionIndex = commercialIndex;
-      this.selectedSpotCollection = this.userInfo.SpotCollections[this.selectedSpotCollectionIndex];
+      this.selectedSpotCollection = this._utilsService.DeepCopy<SpotCollectionResponse>(this.userInfo.SpotCollections[this.selectedSpotCollectionIndex]);
       this.hasNoCommercialsLoaded = false;
       this._commercialService.SetCommercial(this.selectedSpotCollection);
     }); 
@@ -127,21 +132,21 @@ export class AddCommercialComponent implements OnInit {
     newCommercial.Description = `Spot Collection for ${this.userInfo.UserInfo.CredLogin}`;
     newCommercial.Settings = new SpotCollectionSettings();
     newCommercial.SpotList = new Array<SpotResponse>();
-    this._ngZone.run(() => {
-      setTimeout(() =>{
-        this._changeDetector.detectChanges();
-      },200);
-      this.selectedSpotCollection = newCommercial;
-      this.hasNoCommercialsLoaded = false;
-      this._commercialService.SetCommercial(this.selectedSpotCollection);
-    });
+    
+    setTimeout(() =>{
+      this._changeDetector.detectChanges();
+    },200);
+    this.selectedSpotCollection = newCommercial;
+    this.hasNoCommercialsLoaded = false;
+    this._commercialService.SetCommercial(this.selectedSpotCollection);
   }
 
   CancelCreateCommercial(){
-    this._ngZone.run(() => {
-      this.selectedSpotCollection = new SpotCollectionResponse();
-      this.hasNoCommercialsLoaded = true;
-    });
+    this.hasNoCommercialsLoaded = true;
+    this.selectedSpotCollection = new SpotCollectionResponse();
+    this.selectedSpotCollection.SpotList = new Array<SpotResponse>();
+    this._commercialService.ResetTimePlayed();
+    this._commercialService.SetCommercial(this.selectedSpotCollection)
   }
 
   SaveCommercial(item: SpotCollectionResponse){

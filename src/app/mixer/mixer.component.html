@@ -31,6 +31,7 @@
           <div class="slider-wrapper">
             <div class="slider-container">
               <div class="mixer-slider-container">
+                  <div id="meter{{i}}" class="audio-meter" ></div>
                   <mat-slider class="mixer-slider" min="0" max="2" step="0.01" (pan)="Log()" (input)="UpdateVolume($event, i, mixer)" [(ngModel)]="mixer.CurrentVolume" vertical></mat-slider>
               </div>
             </div>
@@ -50,17 +51,22 @@
             Pads
           </ion-label>
         </ion-list-header>
-        <ion-list class="file-list" *ngIf="!showPads">
-          <ng-container class="file" *ngFor="let spot of userInfo.SpotCollections; let i = index">
-            <ion-item color="dark" >
-              {{spot.Name}}
-            </ion-item>
-          </ng-container>
-        </ion-list>
+        <div class="commercial-container" *ngIf="!showPads">
+          <ion-list class="file-list" >
+            <ng-container class="file" *ngFor="let spot of userInfo.SpotCollections; let i = index">
+              <ion-item color="dark" (click)="SelectCommercialToEdit(i)">
+                {{spot.Name}}
+              </ion-item>
+            </ng-container>
+          </ion-list>
+          <div class="commercial-audio-player">
+            <app-audio-player></app-audio-player>
+          </div>
+        </div>
         <div class="pad-list-container" *ngIf="showPads">
           <div class="pad-list" *ngFor="let spot of userInfo.PadCollections[selectedPadCollectionIndex].SpotList; let i = index">
             <div class="pad-item">
-              <ion-img [style.background]="spot.Setting.PadCollectionBackgroundColor" id="padImage{{i}}" src="../../assets/images/SoundPad8.png"></ion-img>
+              <ion-img [style.background]="spot.Setting.PadCollectionBackgroundColor" id="padImage{{i}}" src="../../assets/images/SoundPad8.png" (click)="PlayAudioFile(spot)"></ion-img>
               <ion-label class="pad-item-name">{{spot.Name}}</ion-label>
             </div>
           </div>

@@ -10,10 +10,7 @@ import { SessionIdentifiers } from 'src/utils/session-identifiers.enum';
 import { LoginResponse } from 'src/models/response/login-response.model';
 import { FileSystemService } from 'src/services/file-system.service';
 import { HomePage } from '../home/home.page';
-import { hostViewClassName } from '@angular/compiler';
 import { CommercialPlayerService } from 'src/services/commercial-player.service';
-import { UtilsService } from 'src/services/utils.service';
-import { SpotCollectionResponse } from 'src/models/response/spot-collection-response.model';
 
 @Component({
   selector: 'app-login',
@@ -39,8 +36,6 @@ export class LoginComponent implements OnInit {
               private _fb: FormBuilder,
               private _fileService: FileSystemService,
               private _commercialService: CommercialPlayerService,
-              private _ngZone: NgZone,
-              private _utilsService: UtilsService,
               @Host() homePage: HomePage) {
     this._homePage = homePage;
               }
@@ -84,6 +79,7 @@ export class LoginComponent implements OnInit {
         // this._userAccountService.SaveUserAccountInfo(result.Data);
         let userInfo = await this.InitApplication(result.Data);
         this._userAccountService.SaveUserAccountInfo(userInfo);
+        console.log(userInfo);
         this._commercialService.SetCommercial(userInfo.SpotCollections[0]);
         this._globalService.LogInUser(true);
         this.loginForm.reset();

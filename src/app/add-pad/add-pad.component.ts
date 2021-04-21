@@ -9,17 +9,13 @@ import { StatusCode } from 'src/utils/status-code.enum';
 import { FileSystemService } from 'src/services/file-system.service';
 import { ChooserResult } from '@ionic-native/chooser/ngx';
 import { PadSpotCollectionService } from 'src/services/pad-spot-collection.service';
-import { IOSFilePicker } from '@ionic-native/file-picker/ngx';
 import { MainNavigationPage } from '../main-navigation/main-navigation.page';
-import { AudioService } from 'src/services/audio.service';
 import { UtilsService } from 'src/services/utils.service';
 import { SpotSetting } from 'src/models/spot-setting.model';
 import { BaseResponse } from 'src/models/response/base-response.model';
 import { PadCollectionResponse } from 'src/models/response/pad-collection-response.model';
 import * as moment from 'moment';
-import { SessionIdentifiers } from 'src/utils/session-identifiers.enum';
 import { Capacitor, FilesystemDirectory, FilesystemEncoding } from '@capacitor/core';
-import { Media } from '@ionic-native/media/ngx';
 
 @Component({
   selector: 'app-add-pad',
@@ -34,14 +30,6 @@ export class AddPadComponent implements OnInit, AfterViewInit {
   selectedPadCollectionIndex: number = 0;
 
   chooserData: ChooserResult;
-
-  //TODO move this into mixer view so it only handled once.
-  audioContext: AudioContext;
-  currentFilePlaying: SpotResponse;
-  audioElement: HTMLAudioElement;
-
-  gainNode: GainNode;
-
 
   constructor(private _userAccountService: UserAccountService,
               private _modal: ModalController,
@@ -74,20 +62,11 @@ export class AddPadComponent implements OnInit, AfterViewInit {
     }
   }
  
-  ngOnInit() {
-    const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
-    this.audioContext = new AudioContext();
-    
+  ngOnInit() {  
   }
 
   ngAfterViewInit(){
-    this.audioElement = document.querySelector('audio');
-    let track = this.audioContext.createMediaElementSource(this.audioElement);
-    this.gainNode = this.audioContext.createGain();
-    track.connect(this.gainNode).connect(this.audioContext.destination);
-    if(this.audioContext.state == 'suspended'){
-      this.audioContext.resume();
-    }
+
   }
 
   /**

@@ -18,11 +18,10 @@ import { BluetoothSerial } from '@ionic-native/bluetooth-serial/ngx';
 import { Chooser } from '@ionic-native/chooser/ngx';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { Keyboard } from '@ionic-native/keyboard/ngx';
-import { File } from '@ionic-native/file/ngx';
 import { Media } from '@ionic-native/media/ngx';
 import { MatSliderModule } from '@angular/material/slider';
 import { HammerjsConfig } from './hammerjs-config.model';
-import { PipesModule } from './pipes.module';
+import { BackgroundMode } from '@ionic-native/background-mode/ngx';
 
 @NgModule({
   declarations: [AppComponent],
@@ -45,9 +44,9 @@ import { PipesModule } from './pipes.module';
     Chooser,
     InAppBrowser,
     Keyboard,
-    File,
     Media,
     Device,
+    BackgroundMode,
     { provide: HTTP_INTERCEPTORS, useClass: SmartCasterInterceptor, multi: true },
     { provide: HAMMER_GESTURE_CONFIG, useClass: HammerjsConfig },
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }

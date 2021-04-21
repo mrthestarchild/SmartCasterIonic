@@ -1,11 +1,12 @@
 import { Component, OnInit, NgZone, ChangeDetectorRef } from '@angular/core';
 import { ToastController, Platform, AlertController } from '@ionic/angular';
-import { BluetoothLE, ScanParams, BluetoothScanMode, BluetoothMatchMode, BluetoothCallbackType, BluetoothMatchNum, ScanStatus, DeviceInfo } from '@ionic-native/bluetooth-le/ngx';
+import { Device, BluetoothLE, ScanParams, BluetoothScanMode, BluetoothMatchMode, BluetoothCallbackType, BluetoothMatchNum, ScanStatus } from '@ionic-native/bluetooth-le/ngx';
 import { BluetoothSerial } from '@ionic-native/bluetooth-serial/ngx';
-import { Chooser, ChooserResult } from '@ionic-native/chooser/ngx';
+import { ChooserResult } from '@ionic-native/chooser/ngx';
 import { FileSystemService } from 'src/services/file-system.service';
 import { StatusCode } from 'src/utils/status-code.enum';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+
 
 @Component({
   selector: 'app-test',
@@ -13,6 +14,13 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/dr
   styleUrls: ['./test.component.scss'],
 })
 export class TestComponent implements OnInit {
+
+  scannedBle: Array<any>;
+  // bleOptions: BLEScanOptions;
+
+  deviceInfo: Device;
+  deviceInfoFound: boolean = false;
+  isInitialized: boolean = false;
 
   devices: Array<ScanStatus> = [];
   serialDevices: any = [];
@@ -38,47 +46,52 @@ export class TestComponent implements OnInit {
   testList1 = [1,2,3,4,5,6,7];
   testList2 = [8,9,10,11,12];
 
-  constructor(private ble: BluetoothLE,
+  constructor(public bluetooth_le: BluetoothLE,
               private platform: Platform,
-              private _toastCtrl: ToastController,
               private bls: BluetoothSerial,
               private alertController: AlertController,
               private _ngZone: NgZone,
               private _fileService: FileSystemService) {
     this.platform.ready().then((readySource) => {
       console.log('Platform ready from', readySource);
-      this.ble.initialize().subscribe(ble => {
+      this.bluetooth_le.initialize().subscribe(ble => {
         console.log('ble', ble.status) // logs 'enabled'
       });
     });
   }
 
   ngOnInit() {
-    this.ble.isEnabled().then(success =>{
+    this.bluetooth_le.isEnabled().then(success =>{
     }, err =>{
       alert("Error");
     });
     // if(this.ble.isScanning()){
     //   this.StopScan();
     // }
-    this.bleScanMode = BluetoothScanMode.SCAN_MODE_LOW_POWER;
-    this.bleMatchMode = BluetoothMatchMode.MATCH_MODE_AGRESSIVE;
-    this.bleCallbackType = BluetoothCallbackType.CALLBACK_TYPE_FIRST_MATCH;
-    this.bleMatchNumber = BluetoothMatchNum.MATCH_NUM_MAX_ADVERTISEMENT;
+    // this.bleScanMode = BluetoothScanMode.SCAN_MODE_LOW_POWER;
+    // this.bleMatchMode = BluetoothMatchMode.MATCH_MODE_AGRESSIVE;
+    // this.bleCallbackType = BluetoothCallbackType.CALLBACK_TYPE_FIRST_MATCH;
+    // this.bleMatchNumber = BluetoothMatchNum.MATCH_NUM_MAX_ADVERTISEMENT;
+
     this.bleScanOptions = {
       services: [],
       allowDuplicates: false,
       /** Defaults to Low Power. Available from API21 / API 23 (Android) */
-      scanMode: this.bleScanMode,
+      // scanMode: this.bleScanMode,
       /** Defaults to Aggressive. Available from API23 (Android) */
-      matchMode: this.bleMatchMode,
+      // matchMode: this.bleMatchMode,
       /** Defaults to One Advertisement. Available from API23 (Android) */
-      matchNum: this.bleMatchNumber,
+      // matchNum: this.bleMatchNumber,
       /** Defaults to All Matches. Available from API21 / API 23. (Android) */
-      callbackType: this.bleCallbackType,
+      // callbackType: this.bleCallbackType,
       /** True/false to show only connectable devices, rather than all devices ever seen, defaults to false (Windows) */
       isConnectable: true
     }
+    // this.deviceInfo.name = "Empty";
+    // this.deviceInfo.address = "Empty";
+    // this.deviceInfo.status = "closed"
+    // this.deviceInfo.services = new Array<Service>();
+
   }
 
   /**
@@ -91,7 +104,7 @@ export class TestComponent implements OnInit {
       this.StopScan();
     }, 2000);
     this.showScanning = true;
-    this.ble.startScan(this.bleScanOptions).subscribe((device: ScanStatus) =>{
+    this.bluetooth_le.startScan(this.bleScanOptions).subscribe((device: ScanStatus) =>{
       this._ngZone.run(()=>{
         console.log(device);
         this.devices.push(device);
@@ -101,11 +114,11 @@ export class TestComponent implements OnInit {
 
   StopScan(){
     this.showScanning = false;
-    this.ble.stopScan();
+    this.bluetooth_le.stopScan();
   }
 
   GetConnectedDevices(){
-    this.ble.retrieveConnected({
+    this.bluetooth_le.retrieveConnected({
       "services": [
         "180D",
         "180f",
@@ -151,7 +164,7 @@ export class TestComponent implements OnInit {
    * Bluetooth Serial
    */
   ListPairedDevices(){
-    this.bls.list().then((success: any) =>{
+    this.bls.discoverUnpaired().then((success: any) =>{
       this._ngZone.run(()=>{
         console.log("Success: " +success);
         this.serialDevices = success;
@@ -182,7 +195,8 @@ export class TestComponent implements OnInit {
       this.gettingDevices = false;
     },
       (err) => {
-        console.log(err);
+        console.error(err);
+        this.gettingDevices = false;
       });
   
     this.bls.list().then((success) => {
@@ -288,5 +302,25 @@ export class TestComponent implements OnInit {
                         event.currentIndex);
     }
   }
+
+  DiscoverDevices(){
+    this.bluetooth_le.isInitialized().then(value =>{
+      this.isInitialized = value.isInitialized;
+    });
+  }
+
+  // ScanBluetooth(){
+  //   this.scannedBle = new Array<any>();
+  //   this.ble.scan([], 5).subscribe(value =>{
+  //     console.log(value);
+  //     this.scannedBle.push(value);
+  //     if(value){
+  //       this._ngZone.run(() =>{
+  //         this.scannedBle.push(value);
+  //       });
+        
+  //     }
+  //   })
+  // }
   
 }

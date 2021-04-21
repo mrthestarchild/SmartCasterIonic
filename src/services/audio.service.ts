@@ -1,18 +1,12 @@
 import { Injectable } from '@angular/core';
-import { File } from '@ionic-native/file/ngx';
-import { Media } from '@ionic-native/media/ngx'; 
 import { AudioEqTypes as AudioEqTypes } from 'src/models/audio-eq-types.enum';
-import { Subject } from 'rxjs';
-import { SpotResponse } from 'src/models/response/spot-response.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AudioService {
 
-  constructor(private _file: File,
-              private _media: Media) {
-               }
+  constructor() {}
 
   CreateAudioEq(context: AudioContext ,type: AudioEqTypes): BiquadFilterNode{
     let node = context.createBiquadFilter();
