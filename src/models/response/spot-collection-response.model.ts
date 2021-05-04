@@ -12,5 +12,5 @@ export class SpotCollectionResponse {
     public Description: string;
     public Settings: SpotCollectionSettings;
     public ShortCode: string;
-    public SpotList: SpotResponse[];
+    public SpotList: Array<SpotResponse>;
 }

@@ -1,6 +1,7 @@
-import { ChangeDetectorRef, Component, Host, NgZone, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
 import { SpotCollectionResponse } from 'src/models/response/spot-collection-response.model';
 import { CommercialPlayerService } from 'src/services/commercial-player.service';
+
 @Component({
   selector: 'app-audio-player',
   templateUrl: './audio-player.component.html',
@@ -28,7 +29,7 @@ export class AudioPlayerComponent implements OnInit {
     });
     if(!this.selectedSpotCollection){
       this.selectedSpotCollection = this._commercialService.localCommercialList;
-      this.spotCollectionLength = this.selectedSpotCollection.SpotList.length - 1;
+      this.spotCollectionLength = this.selectedSpotCollection ? this.selectedSpotCollection.SpotList.length - 1 : 0;
     }
     this._commercialService.currectCommercialTimePlayed$.subscribe(time =>{
       if(time){
@@ -92,9 +93,11 @@ export class AudioPlayerComponent implements OnInit {
   GetTotalSpotCollectionTime(): number{
     if(this.selectedSpotCollection == null || this.selectedSpotCollection == undefined) return 0;
     let totalTime = 0;
-    this.selectedSpotCollection.SpotList.forEach(spot =>{
-      totalTime += spot.DurationMinutes
-    });
+    if(this.selectedSpotCollection && this.selectedSpotCollection.SpotList.length > 0){
+      this.selectedSpotCollection.SpotList.forEach(spot =>{
+        totalTime += spot.DurationMinutes
+      });
+    }
     return totalTime;
   }
 

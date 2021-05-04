@@ -31,10 +31,12 @@ export class CommercialPlayerService {
   SetAudioElement(audioElement: HTMLAudioElement){
     this.localAudioElement = audioElement;
     this.audioElement.next(audioElement);
-    let file = Capacitor.convertFileSrc(this.localCommercialList.SpotList[this.localCommercialIndex].Uri);
-    // console.log("set audio element file src: " +file)
-    this.localAudioElement.src = file;
-    this.localAudioElement.addEventListener("ended", this.PlayNextTrack.bind(this));
+    if(this.localCommercialList && this.localCommercialList.SpotList.length > 0){
+      let file = Capacitor.convertFileSrc(this.localCommercialList.SpotList[this.localCommercialIndex].Uri);
+      // console.log("set audio element file src: " +file)
+      this.localAudioElement.src = file;
+      this.localAudioElement.addEventListener("ended", this.PlayNextTrack.bind(this));
+    }
   }
 
   DisplayCurrentTimePlayed(){
@@ -56,6 +58,7 @@ export class CommercialPlayerService {
     }
     else{
       this.localAudioElement.play().catch(err =>{
+        console.log("Error playing song");
         console.error(err);
       });
     }

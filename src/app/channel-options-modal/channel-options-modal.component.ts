@@ -14,8 +14,7 @@ export class ChannelOptionsModalComponent implements OnInit {
   @Input() _channel: Channel;
 
   IconList: Array<string> = IonicIconList;
-
-
+  
   channelData: ChannelData = new ChannelData;
 
   constructor(private _modal: ModalController) {

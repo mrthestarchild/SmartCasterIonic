@@ -50,8 +50,8 @@ export class MixerComponent implements OnInit, AfterViewInit {
               @Host() mainNav: MainNavigationPage) {
     this._mainNav = mainNav;
     // this._onePeakMeter = new webAudioPeakMeter();
-    this._commercialPeakMeter = new webAudioPeakMeter(); 
-    this._padPeakMeter = new webAudioPeakMeter();
+    this._commercialPeakMeter = webAudioPeakMeter;
+    this._padPeakMeter = webAudioPeakMeter;
     this._userAccountService.userInfo$.subscribe(result =>{
       this.userInfo = result;
     });
@@ -251,13 +251,13 @@ export class MixerComponent implements OnInit, AfterViewInit {
         break;
       case 4:
         if(!channel.IsMuted){
-          this._commercialPeakMeter.setGainDiff(event.value);
+          // this._commercialPeakMeter.setGainDiff(event.value);
           this._mainNav.commercialGainNode.gain.value = event.value;
         }
         break;
       case 5:
         if(!channel.IsMuted){
-          this._padPeakMeter.setGainDiff(event.value);
+          // this._padPeakMeter.setGainDiff(event.value);
           this._mainNav.padGainNode.gain.value = event.value;
         } 
         break;

@@ -22,12 +22,9 @@ export class GlobalService {
 
   private userTheme = new Subject<string>();
   userTheme$ = this.userTheme.asObservable();
-
-  _http: HttpClient;
   baseUrl: string;
 
-  constructor(private http: HttpClient) {
-    this._http = this.http;
+  constructor(public _http: HttpClient) {
     this.baseUrl = environment.endpoint;
   }
 

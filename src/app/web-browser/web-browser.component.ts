@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { InAppBrowser, InAppBrowserOptions, InAppBrowserObject } from '@ionic-native/in-app-browser/ngx';
 import { BrowserModule } from '@angular/platform-browser';
+import { Capacitor } from '@capacitor/core';
 
 @Component({
   selector: 'app-web-browser',
@@ -39,11 +40,12 @@ export class WebBrowserComponent implements OnInit {
 
   ngOnInit(){}
 
-  public openWithSystemBrowser(url : string){
+  public openWithSystemBrowser(url?: string){
     let target = "_system";
     url = "https://google.com";
     this.browser.create(url,target,this.options);
   }
+
   public openWithBlankBrowser(url : string){
     let target = "_blank";
     if(!url){
@@ -51,6 +53,7 @@ export class WebBrowserComponent implements OnInit {
     }
     this.browser.create(url,target,this.options);
   }
+
   public openWithIframe(url: string){
     url = this.url;
     if(!this.url.includes("https://")){
@@ -93,5 +96,9 @@ export class WebBrowserComponent implements OnInit {
     this.canGoBackward = true;
     this.url = this.urlHistory[this.urlIndex];
     this.openWithIframe(this.urlHistory[this.urlIndex]);
+  }
+
+  async OpenWithCapacitor(){
+    await Capacitor.Plugins.Browser.open({url: 'http://capacitorjs.com/'})
   }
 }

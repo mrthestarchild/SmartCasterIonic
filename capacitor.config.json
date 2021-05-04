@@ -7,9 +7,7 @@
   "server": {
     "allowNavigation": [
       "https://google.com/*"
-    ],
-    "url": "http://192.168.0.3:8100",
-    "cleartext": true
+    ]
   },
   "plugins": {
     "SplashScreen": {

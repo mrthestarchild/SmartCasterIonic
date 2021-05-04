@@ -14,11 +14,9 @@ import { HttpHeader } from 'src/utils/http-header.enum';
 export class AuthenticationService {
 
   baseUrl: string;
-  _http: HttpClient;
 
-  constructor(private http: HttpClient) {
+  constructor(public _http: HttpClient) {
     this.baseUrl = environment.endpoint;
-    this._http = this.http;
   }
 
   SetAuthToken(token: string) {

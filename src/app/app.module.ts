@@ -8,19 +8,17 @@ import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Device } from '@ionic-native/device/ngx';
 
-import { AppComponent } from './app.component';
-import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from 'src/app/app.component';
+import { AppRoutingModule } from 'src/app/app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { SmartCasterInterceptor } from './smart-caster.interceptor';
+import { SmartCasterInterceptor } from 'src/app/smart-caster.interceptor';
 import { SuperTabsModule } from '@ionic-super-tabs/angular';
-import { BluetoothLE } from '@ionic-native/bluetooth-le/ngx';
-import { BluetoothSerial } from '@ionic-native/bluetooth-serial/ngx';
 import { Chooser } from '@ionic-native/chooser/ngx';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { Keyboard } from '@ionic-native/keyboard/ngx';
 import { Media } from '@ionic-native/media/ngx';
 import { MatSliderModule } from '@angular/material/slider';
-import { HammerjsConfig } from './hammerjs-config.model';
+import { HammerjsConfig } from 'src/app/hammerjs-config.model';
 import { BackgroundMode } from '@ionic-native/background-mode/ngx';
 
 @NgModule({
@@ -39,8 +37,6 @@ import { BackgroundMode } from '@ionic-native/background-mode/ngx';
   providers: [
     StatusBar,
     SplashScreen,
-    BluetoothLE,
-    BluetoothSerial,
     Chooser,
     InAppBrowser,
     Keyboard,

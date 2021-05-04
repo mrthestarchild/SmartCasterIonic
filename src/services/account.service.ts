@@ -16,14 +16,12 @@ import { SessionIdentifiers } from 'src/utils/session-identifiers.enum';
 export class UserAccountService {
 
   baseUrl: string;
-  _http: HttpClient;
 
   private userInfo = new Subject<LoginResponse>();
   userInfo$ = this.userInfo.asObservable();
 
-  constructor(http: HttpClient) {
+  constructor(public _http: HttpClient) {
     this.baseUrl = environment.endpoint;
-    this._http = http;
   }
 
   CreateUserAccount(payload: CreateUserAccountRequest): Observable<BaseResponse<CreateUserAccountResponse>> {

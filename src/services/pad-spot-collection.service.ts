@@ -20,7 +20,7 @@ export class PadSpotCollectionService {
 
   baseUrl: string;
 
-  constructor(private _http: HttpClient,
+  constructor(public _http: HttpClient,
               private _platform: Platform) {
     this.baseUrl = environment.endpoint;
   }
@@ -98,15 +98,7 @@ export class PadSpotCollectionService {
     return this._http.post<BaseResponse<PadCollectionResponse>>(`${this.baseUrl}/api/PadCollection/AddUpdatePadCollection`, request);
   }
 
-  AddUpdatePadCollectionPromise(request: PadCollectionRequest){
-    return this._http.post<BaseResponse<PadCollectionResponse>>(`${this.baseUrl}/api/PadCollection/AddUpdatePadCollection`, request).toPromise();
-  }
-
   AddUpdateSpotCollection(request: SpotCollectionRequest){
     return this._http.post<BaseResponse<SpotCollectionResponse>>(`${this.baseUrl}/api/SpotCollection/AddUpdateSpotCollection`, request);
-  }
-
-  AddUpdateSpotCollectionPromise(request: SpotCollectionRequest){
-    return this._http.post<BaseResponse<SpotCollectionResponse>>(`${this.baseUrl}/api/SpotCollection/AddUpdateSpotCollection`, request).toPromise();
   }
 }

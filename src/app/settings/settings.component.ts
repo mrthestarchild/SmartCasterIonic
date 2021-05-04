@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { LoginResponse } from 'src/models/response/login-response.model';
 import { UserAccountService } from 'src/services/account.service';
-import { SessionIdentifiers } from 'src/utils/session-identifiers.enum';
 
 @Component({
   selector: 'app-settings',

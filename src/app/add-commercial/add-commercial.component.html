@@ -18,7 +18,7 @@
                  id="createCommercialList"
                  #createCommercialList="cdkDropList"
                  [cdkDropListData]="selectedSpotCollection.SpotList"
-                 [cdkDropListConnectedTo]="[spotItemList]"
+                 [cdkDropListConnectedTo]="spotItemList"
                  (cdkDropListDropped)="Drop($event)" >
                 <div class="drag-item-placeholder" *cdkDragPlaceholder></div>
                 <ion-item cdkDrag class="drag-list" color="dark" *ngFor="let spot of selectedSpotCollection.SpotList">
@@ -55,7 +55,7 @@
               id="spotItemList"
               #spotItemList="cdkDropList"
               [cdkDropListData]="userInfo.Spots"
-              [cdkDropListConnectedTo]="[createCommercialList]"
+              [cdkDropListConnectedTo]="createCommercialList"
               (cdkDropListDropped)="Drop($event)"
               cdkDropListSortingDisabled
               [cdkDropListEnterPredicate]="NoReturnPredicate">

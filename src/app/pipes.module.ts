@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { ConvertSecondsForViewPipe } from '../pipes/convert-seconds-for-view.pipe';
+import { ConvertSecondsForViewPipe } from 'src/pipes/convert-seconds-for-view.pipe';
 
 @NgModule({
 declarations: [ConvertSecondsForViewPipe],

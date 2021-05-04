@@ -76,10 +76,8 @@ export class LoginComponent implements OnInit {
 
     this._authService.RequestLogin(this.payload).subscribe(async result => {
       if (result.StatusCode === StatusCode.Success) {
-        // this._userAccountService.SaveUserAccountInfo(result.Data);
         let userInfo = await this.InitApplication(result.Data);
         this._userAccountService.SaveUserAccountInfo(userInfo);
-        console.log(userInfo);
         this._commercialService.SetCommercial(userInfo.SpotCollections[0]);
         this._globalService.LogInUser(true);
         this.loginForm.reset();
@@ -117,8 +115,8 @@ export class LoginComponent implements OnInit {
           userInfo.SpotCollections[x].SpotList = await this._fileService.ValidateSpotListUri(userInfo.SpotCollections[x].SpotList);
         }
         this._homePage.loadingInfoMessage = "Checking Pads";
-        for(let x = 0; x < userInfo.PadCollections.length; x++){
-          userInfo.PadCollections[x].SpotList = await this._fileService.ValidateSpotListUri(userInfo.PadCollections[x].SpotList);
+        for(let y = 0; y < userInfo.PadCollections.length; y++){
+          userInfo.PadCollections[y].SpotList = await this._fileService.ValidateSpotListUri(userInfo.PadCollections[y].SpotList);
         }
         resolve(userInfo);
     });

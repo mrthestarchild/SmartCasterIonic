@@ -7,7 +7,7 @@ import { LocalServiceResponse } from 'src/models/response/local-service-response
 import { StatusCode } from 'src/utils/status-code.enum';
 import { HttpClient } from '@angular/common/http';
 import { Capacitor, FilesystemDirectory } from '@capacitor/core';
-import { Media, MediaObject } from '@ionic-native/media/ngx';
+import { Media } from '@ionic-native/media/ngx';
 import { SessionIdentifiers } from 'src/utils/session-identifiers.enum';
 
 @Injectable({

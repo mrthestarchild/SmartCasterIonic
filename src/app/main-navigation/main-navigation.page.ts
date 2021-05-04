@@ -16,6 +16,7 @@ import { AudioEqTypes } from 'src/models/audio-eq-types.enum';
 import { CommercialPlayerService } from 'src/services/commercial-player.service';
 import { UtilsService } from 'src/services/utils.service';
 import { BackgroundMode } from '@ionic-native/background-mode/ngx';
+import { LoginRequest } from 'src/models/request/login-request.model';
 
 
 @Component({

@@ -95,7 +95,6 @@ export class AddCommercialComponent implements OnInit {
   }
 
   Drop(event: CdkDragDrop<SpotResponse[]>) {
-    console.dir(event);
     // reordering createCommercialList
     if (event.previousContainer.id == 'createCommercialList' && 
         event.isPointerOverContainer == true &&
@@ -104,6 +103,7 @@ export class AddCommercialComponent implements OnInit {
     }
     // transfering from spot list to commercial list
     else if(event.previousContainer.id == 'spotItemList' && event.container.id == 'createCommercialList'){
+      console.log("Trying to copy item");
       copyArrayItem(event.previousContainer.data,
                     event.container.data,
                     event.previousIndex,
@@ -164,7 +164,7 @@ export class AddCommercialComponent implements OnInit {
     });
     let request = this._padSpotService.ConvertSpotCollectionFromResponseToRequest(currentCollection);
 
-    this._padSpotService.AddUpdateSpotCollectionPromise(request).then(response =>{
+    this._padSpotService.AddUpdateSpotCollection(request).toPromise().then(response =>{
       if(response.StatusCode == StatusCode.Success){
         let spotCollection = this.userInfo.SpotCollections.find(collection => collection.Id == response.Data.Id);
         if(spotCollection == null || spotCollection == undefined){

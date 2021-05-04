@@ -96,7 +96,7 @@ export class AddPadComponent implements OnInit, AfterViewInit {
         this.userInfo.Spots[addPadData.SelectedIndex].Setting = newPad.Setting;
         this.userInfo.PadCollections[this.selectedPadCollectionIndex].SpotList.push(newPad);
         let request = this._spotService.ConvertPadCollectionResponseToRequest(this.userInfo.PadCollections[this.selectedPadCollectionIndex]);
-        this._spotService.AddUpdatePadCollectionPromise(request).then((response: BaseResponse<PadCollectionResponse>) =>{
+        this._spotService.AddUpdatePadCollection(request).toPromise().then((response: BaseResponse<PadCollectionResponse>) =>{
           if(response.StatusCode == StatusCode.Success){
             let padCollection = this.userInfo.PadCollections.find(collection => collection.Id == response.Data.Id);
             if(padCollection == null || padCollection == undefined){
