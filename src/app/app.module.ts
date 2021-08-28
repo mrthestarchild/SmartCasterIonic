@@ -13,13 +13,13 @@ import { AppRoutingModule } from 'src/app/app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SmartCasterInterceptor } from 'src/app/smart-caster.interceptor';
 import { SuperTabsModule } from '@ionic-super-tabs/angular';
-import { Chooser } from '@ionic-native/chooser/ngx';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { Keyboard } from '@ionic-native/keyboard/ngx';
-import { Media } from '@ionic-native/media/ngx';
 import { MatSliderModule } from '@angular/material/slider';
-import { HammerjsConfig } from 'src/app/hammerjs-config.model';
 import { BackgroundMode } from '@ionic-native/background-mode/ngx';
+import { IOSFilePicker } from '@ionic-native/file-picker/ngx';
+import { FileChooser } from '@ionic-native/file-chooser/ngx';
+import { HammerjsConfig } from 'src/models/hammerjs-config.model';
 
 @NgModule({
   declarations: [AppComponent],
@@ -37,12 +37,12 @@ import { BackgroundMode } from '@ionic-native/background-mode/ngx';
   providers: [
     StatusBar,
     SplashScreen,
-    Chooser,
     InAppBrowser,
     Keyboard,
-    Media,
     Device,
     BackgroundMode,
+    IOSFilePicker,
+    FileChooser,
     { provide: HTTP_INTERCEPTORS, useClass: SmartCasterInterceptor, multi: true },
     { provide: HAMMER_GESTURE_CONFIG, useClass: HammerjsConfig },
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }

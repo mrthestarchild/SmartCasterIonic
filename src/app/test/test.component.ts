@@ -1,6 +1,5 @@
 import { Component, OnInit, NgZone } from '@angular/core';
 import { Platform, AlertController } from '@ionic/angular';
-import { ChooserResult } from '@ionic-native/chooser/ngx';
 import { FileSystemService } from 'src/services/file-system.service';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 
@@ -22,12 +21,12 @@ export class TestComponent implements OnInit {
   statusMessage: string;
   showScanning: boolean = false;
 
-  uri: ChooserResult = {
-    name: "nothing",
-    uri: "nothing",
-    dataURI: "nothing",
-    mediaType: "nothing"
-  };
+  // uri: ChooserResult = {
+  //   name: "nothing",
+  //   uri: "nothing",
+  //   dataURI: "nothing",
+  //   mediaType: "nothing"
+  // };
 
   unpairedDevices: any;
   pairedDevices: any;

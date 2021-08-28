@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { InAppBrowser, InAppBrowserOptions, InAppBrowserObject } from '@ionic-native/in-app-browser/ngx';
 import { BrowserModule } from '@angular/platform-browser';
-import { Capacitor } from '@capacitor/core';
+import { Browser } from '@capacitor/browser';
 
 @Component({
   selector: 'app-web-browser',
@@ -98,7 +98,10 @@ export class WebBrowserComponent implements OnInit {
     this.openWithIframe(this.urlHistory[this.urlIndex]);
   }
 
+  /**
+   * Opens window on the 
+   */
   async OpenWithCapacitor(){
-    await Capacitor.Plugins.Browser.open({url: 'http://capacitorjs.com/'})
+    await Browser.open({url: 'http://capacitorjs.com/'})
   }
 }

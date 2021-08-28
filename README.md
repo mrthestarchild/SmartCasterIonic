@@ -80,8 +80,8 @@ This will set up your environment and create a www folder that will be used to b
 
 ### Build Capacitor
 ```
-npx cap add ios
-npx cap add android
+ionic cap add ios
+ionic cap add android
 ```
 This will build your local working environment so that you initialize your application through xcode or android studio.
 
@@ -95,6 +95,6 @@ This will open xCode or Android Studio and prepare your application to run in th
 ### Syncing Capacitor with Ionic 
 
 ```
-npx cap copy
+ionic cap copy
 ```
 Every time you perform a build (e.g. ionic build) that changes your web directory (default: www), you’ll need to copy those changes down to your native projects:

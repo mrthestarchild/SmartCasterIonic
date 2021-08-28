@@ -47,6 +47,10 @@ export class CreateAccountComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  /**
+   * Utility method to validate user password matches between two inputs.
+   * @returns 
+   */
   CheckMatchingPassword(){
     if(!this.createAccountForm) return;
     let password = this.createAccountForm.controls.password.value;
@@ -59,6 +63,9 @@ export class CreateAccountComponent implements OnInit {
     }
   }
 
+  /**
+   * Creates a user account and logs in the user.
+   */
   CreateAccount() {
     this.loading = true;
     this.payload = new CreateUserAccountRequest();
@@ -72,11 +79,11 @@ export class CreateAccountComponent implements OnInit {
       this.payload.UserName = this.createAccountForm.controls.username.value;
       this.payload.Password = this.createAccountForm.controls.password.value;
       this._userAccountService.CreateUserAccount(this.payload).subscribe(response =>{
-        if(response.StatusCode == StatusCode.Success){
+        if(response.StatusCode == StatusCode.SUCCESS){
           this.ShowCreateAccountModal("Success", response.StatusMessage);
           this.loading = false;
         }
-        else if(response.StatusCode == StatusCode.InvalidInput){
+        else if(response.StatusCode == StatusCode.INVALID_INPUT){
           this.ShowCreateAccountModal("Invalid Info", response.StatusMessage);
           this.loading = false;
         }
@@ -88,6 +95,13 @@ export class CreateAccountComponent implements OnInit {
     }
   }
 
+  // TODO: add methods to do user login checks when a user is created. Maybe put these checks into a service??
+  /**
+   * Opens the account created model and will allow a user to login. 
+   * @param statusCode 
+   * @param statusMessage 
+   * @returns 
+   */
   async ShowCreateAccountModal(statusCode: string, statusMessage: string){
     const modal = await this._modal.create({
       component: CreateAccountSubmitModalComponent,
@@ -101,13 +115,13 @@ export class CreateAccountComponent implements OnInit {
     modal.onDidDismiss().then((_data: any) =>{
       if(_data['data'] != null){
         let result = _data['data'];
-        if(result == true && statusCode == StatusCode.Success){
+        if(result == true && statusCode == StatusCode.SUCCESS){
           let payload: LoginRequest = {
             Username: this.createAccountForm.controls.username.value,
             Password: this.createAccountForm.controls.password.value,
           }
           this._authService.RequestLogin(payload).subscribe(result => {
-            if (result.StatusCode === StatusCode.Success) {
+            if (result.StatusCode === StatusCode.SUCCESS) {
               this._userAccountService.SaveUserAccountInfo(result.Data);
               this._globalService.LogInUser(true);
               this._router.navigateByUrl('/main-navigation');

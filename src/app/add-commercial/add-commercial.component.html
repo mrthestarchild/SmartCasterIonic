@@ -1,3 +1,4 @@
+<app-message-queue></app-message-queue>
 <div class="add-commercial-wrapper">
   <div class="add-commercial-container">
     <div class="add-commercial-main">
@@ -41,7 +42,7 @@
               </div>
             </div>
           </div>
-          <app-audio-player [hidden]="hasNoCommercialsLoaded"></app-audio-player>
+          <app-audio-player [showPlaylistLabel]="false" [hidden]="ShouldHideAudioPlayer()"></app-audio-player>
         </div>
       </div>
     </div>

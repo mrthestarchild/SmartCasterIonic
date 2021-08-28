@@ -22,6 +22,9 @@ export class AddPadModalComponent implements OnInit {
     this.padData.SelectedIndex = -1;
   }
 
+  /**
+   * Dismisses modal and returns built a data response for the modal
+   */
   CreatePad(){
     if(this.padData.Name == ''){
       this.padData.Name == this.spots[this.padData.SelectedIndex].Name;
@@ -29,6 +32,9 @@ export class AddPadModalComponent implements OnInit {
     this._modal.dismiss(this.padData);
   }
 
+  /**
+   * Dismisses modal and returns null
+   */
   Cancel(){
     this._modal.dismiss(null);
   }

@@ -12,10 +12,16 @@ export class LogoutModalComponent implements OnInit {
 
   ngOnInit() {}
 
+  /**
+   * Returns true to parent component to complete logout
+   */
   Logout(){
     this._modal.dismiss(true);
   }
 
+  /**
+   * Returns null to parent component to cancel logout
+   */
   Cancel(){
     this._modal.dismiss(null);
   }

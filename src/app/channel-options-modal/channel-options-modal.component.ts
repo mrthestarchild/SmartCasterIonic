@@ -27,10 +27,16 @@ export class ChannelOptionsModalComponent implements OnInit {
     this.channelData.ChannelIcon = this._channel.ChannelIconName;
   }
 
+  /**
+   * Passes channel data back to parent component
+   */
   CreateChannel(){
     this._modal.dismiss(this.channelData);
   }
 
+  /**
+   * Cancels channel options and returns null to parent component
+   */
   Cancel(){
     this._modal.dismiss(null);
   }

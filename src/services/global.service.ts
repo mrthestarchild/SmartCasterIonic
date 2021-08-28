@@ -56,7 +56,7 @@ export class GlobalService {
 
   SetImageFileTypes(){
     let imageFileTypes = this._http.get<BaseResponse<FileTypeListResponse>>(`${this.baseUrl}/api/FileTypes/GetImageFileTypes`).subscribe(response =>{
-      if(response.StatusCode == StatusCode.Success){
+      if(response.StatusCode == StatusCode.SUCCESS){
         localStorage.setItem(SessionIdentifiers.ImageFileTypes, JSON.stringify(response.Data));
       }
       else {
@@ -77,7 +77,7 @@ export class GlobalService {
   }
   SetAudioFileTypes(){
     let audioFileTypes = this._http.get<BaseResponse<FileTypeListResponse>>(`${this.baseUrl}/api/FileTypes/GetAudioFileTypes`).subscribe(response =>{
-      if(response.StatusCode == StatusCode.Success){
+      if(response.StatusCode == StatusCode.SUCCESS){
         localStorage.setItem(SessionIdentifiers.AudioFileTypes, JSON.stringify(response.Data));
       }
       else {

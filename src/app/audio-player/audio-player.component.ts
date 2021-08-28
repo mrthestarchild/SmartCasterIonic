@@ -1,7 +1,12 @@
-import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
+import { Component, Input, NgZone, OnInit } from '@angular/core';
+import { MixerTimeResponse, PlayerState } from '@skylabs_technology/capacitor-mixer';
 import { SpotCollectionResponse } from 'src/models/response/spot-collection-response.model';
 import { CommercialPlayerService } from 'src/services/commercial-player.service';
+import { UtilsService } from 'src/services/utils.service';
 
+/**
+ * Audio player for playing commercials
+ */
 @Component({
   selector: 'app-audio-player',
   templateUrl: './audio-player.component.html',
@@ -9,96 +14,84 @@ import { CommercialPlayerService } from 'src/services/commercial-player.service'
 })
 export class AudioPlayerComponent implements OnInit {
 
+  @Input() showPlaylistLabel: boolean = true;
+
   selectedSpotCollection: SpotCollectionResponse;
-  currectTimePlayed: number;
+
+  totalTimePlayed: MixerTimeResponse;
+  currentTimePlayed: MixerTimeResponse;
+
   currentIndex: number = 0;
-  localAudioElement: HTMLAudioElement;
-  spotCollectionLength: number;
+  spotCollectionLength: number = 0;
+
+  localPlayerState: PlayerState = "stop";
 
   constructor(private _commercialService: CommercialPlayerService,
-              private _changeRef: ChangeDetectorRef,
+              public _utilsService: UtilsService,
               private _ngZone: NgZone ) { 
-    this._commercialService.currentCommercialList$.subscribe(commercial =>{
-      if(commercial){
-        this._ngZone.run(() => {
+    this._commercialService.currentCommercialList$.subscribe(commercial => {
+      if(commercial) {
+        this._ngZone.run(async () => {
           this.selectedSpotCollection = commercial;
           this.spotCollectionLength = commercial.SpotList.length - 1;
-          // this._changeRef.detectChanges();
+          this.currentTimePlayed = {
+            hours: 0,
+            minutes: 0,
+            seconds: 0,
+            milliSeconds: 0
+          };
         });
       }
     });
-    if(!this.selectedSpotCollection){
+    if(!this.selectedSpotCollection) {
       this.selectedSpotCollection = this._commercialService.localCommercialList;
-      this.spotCollectionLength = this.selectedSpotCollection ? this.selectedSpotCollection.SpotList.length - 1 : 0;
+      this.spotCollectionLength = this.selectedSpotCollection.SpotList.length - 1;
     }
-    this._commercialService.currectCommercialTimePlayed$.subscribe(time =>{
-      if(time){
-        this._ngZone.run(() => {
-          this.currectTimePlayed = time;
-          this._changeRef.detectChanges();
-        });
-      }
-    });
-    if(!this.currectTimePlayed){
-      this.currectTimePlayed = this._commercialService.localPreviousTimePlayed;
-    }
-    this._commercialService.currentCommercialListIndex$.subscribe(index =>{
-      if(index){
-        this._ngZone.run(() => {
-          this.currentIndex = index;
-        });
-      }
+    this._commercialService.currentIndex$.subscribe(index =>{
+      this.currentIndex = index;
     });
     if(!this.currentIndex){
-      this.currentIndex = this._commercialService.localCommercialIndex;
+      this.currentIndex = this._commercialService.localCurrentIndex;
     }
-    this._commercialService.audioElement$.subscribe(audio =>{
-      if(audio){
-        this._ngZone.run(() => {
-          this.localAudioElement = audio;
-        });
-      }
+    this._commercialService.totalTimePlayed$.subscribe(totalTime => {
+      this.totalTimePlayed = totalTime;
     });
-    if(!this.localAudioElement){
-      this.GetAudioElement();
+    if(!this.totalTimePlayed) {
+      this.totalTimePlayed = this._commercialService.localTotalTimePlayed;
+    }
+    this._commercialService.currentTimePlayed$.subscribe(currentTime => {
+      this.currentTimePlayed = currentTime;
+    });
+    if(!this.currentTimePlayed){
+      this.currentTimePlayed = this._commercialService.localCurrentTimePlayed;
     }
   }
 
   ngOnInit() {}
 
-  GetAudioElement(){
-    let interval = setInterval(() =>{
-      if(!this.localAudioElement){
-        this.localAudioElement = this._commercialService.localAudioElement;
-      }
-      else{
-        clearInterval(interval);
-      }
-    }, 500);
+  /**
+   * Plays or pauses the state of the player.
+   * @param isPreviousOrNext 
+   */
+  async PlayPausePlayer(): Promise<void> {
+    this.localPlayerState = await this._commercialService.PlayOrPause();
   }
 
-  PlayPausePlayer(){
-    this._commercialService.PlayPauseCommercial();
-  }
-
-  PlayNextTrack(){
-    this.currentIndex++;
+  /**
+   * Stops current track and plays next track in the spot list
+   * @returns 
+   */
+  PlayNextTrack(): void {
+    if(this.currentIndex == this.spotCollectionLength) return;
     this._commercialService.PlayNextTrack();
   }
-  PlayPreviousTrack(){
-    this.currentIndex--;
+
+  /**
+   * Stops previous track and plays previous track in the spot list
+   * @returns 
+   */
+  PlayPreviousTrack(): void {
+    if(this.currentIndex == 0) return;
     this._commercialService.PlayPreviousTrack();
   }
-
-  GetTotalSpotCollectionTime(): number{
-    if(this.selectedSpotCollection == null || this.selectedSpotCollection == undefined) return 0;
-    let totalTime = 0;
-    if(this.selectedSpotCollection && this.selectedSpotCollection.SpotList.length > 0){
-      this.selectedSpotCollection.SpotList.forEach(spot =>{
-        totalTime += spot.DurationMinutes
-      });
-    }
-    return totalTime;
-  }
-
 }

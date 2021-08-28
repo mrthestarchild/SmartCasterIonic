@@ -15,17 +15,21 @@ import { AuthenticationService } from 'src/services/authentication.service';
 import { HttpHeader } from 'src/utils/http-header.enum';
 import { Constants } from 'src/utils/constants';
 import { environment } from 'src/environments/environment';
+import { MessageQueueService } from 'src/services/message-queue.service';
+import { Message } from 'src/models/message.model';
+import { MessageQueueType } from 'src/utils/message-queue-type.enum';
 
 
 @Injectable()
 export class SmartCasterInterceptor implements HttpInterceptor {
 
-  constructor(public authService: AuthenticationService,
-              private router: Router) {}
+  constructor(public _authService: AuthenticationService,
+              private _router: Router,
+              private _messageQueueService: MessageQueueService) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     let newRequest;
-    const authToken = this.authService.GetAuthToken();
+    const authToken = this._authService.GetAuthToken();
     if (request.url.indexOf('api/Authentication/Login') > -1 ||
         request.url.indexOf('api/FileTypes') > -1 ||
         authToken == null || 
@@ -45,11 +49,16 @@ export class SmartCasterInterceptor implements HttpInterceptor {
       if (error.status === 401) {
         // TODO: do error handling for unauthorized
         setTimeout(() =>{
-          this.router.navigateByUrl('/home');
-        },100);
+          this._router.navigateByUrl('/home');
+        },0);
       }
       if (error.status === 500) {
-        // TODO: do error handling for server error.
+        let message: Message = new Message();
+        message.MessageQueueType = MessageQueueType.Danger;
+        message.ShouldShow = true;
+        message.UserMessage = error.message;
+        this._messageQueueService.AddMessageToQueue(message);
+        
       }
     },
     () => {
@@ -62,7 +71,7 @@ export class SmartCasterInterceptor implements HttpInterceptor {
   SetAuthToken(event: HttpResponse<any>) {
     const authHeader = event.headers.get(HttpHeader.Authorization);
     const authToken = authHeader.replace(Constants.Bearer, '');
-    this.authService.SetAuthToken(authToken);
+    this._authService.SetAuthToken(authToken);
   }
 
   RequestWithoutJwt(request: HttpRequest<any>) {
@@ -75,7 +84,7 @@ export class SmartCasterInterceptor implements HttpInterceptor {
   }
 
   RequestWithJwt(request: HttpRequest<any>) {
-    let authToken = this.authService.GetAuthToken();
+    let authToken = this._authService.GetAuthToken();
     return request.clone({
       headers: new HttpHeaders ({
         'Content-Type':  'application/json',

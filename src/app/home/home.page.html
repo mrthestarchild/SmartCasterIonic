@@ -20,7 +20,7 @@
       <ion-button class="create-account-close" expand="full" fill="clear" *ngIf="!showLogin" (click)="CloseCreateAccount()" >
         <ion-icon slot="icon-only" name="close"></ion-icon>
       </ion-button>
-      <app-login *ngIf="showLogin" ></app-login>
+      <app-login #login *ngIf="showLogin" ></app-login>
       <app-create-account *ngIf="!showLogin" ></app-create-account>
       <ion-button class="create-account-button" expand="full" shape="round" color="primary" *ngIf="showLogin" (click)="OpenCreateAccount()" >Create Account</ion-button>
       <!-- <app-test></app-test> -->

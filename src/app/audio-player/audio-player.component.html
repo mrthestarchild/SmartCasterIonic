@@ -1,17 +1,22 @@
-<div class="audio-player-container" *ngIf="selectedSpotCollection && localAudioElement">
+<div class="audio-player-container" *ngIf="selectedSpotCollection">
+  <ion-list-header  *ngIf="showPlaylistLabel && selectedSpotCollection">{{selectedSpotCollection.Name}}</ion-list-header>
   <ion-item lines="none" class="audio-player-view">
     <ion-text *ngIf="selectedSpotCollection.SpotList.length > 0" class="now-playing"><span class="now-playing-label">Now Playing:</span> {{selectedSpotCollection.SpotList[currentIndex].Name || "No Files Loaded"}}</ion-text>
     <ion-text *ngIf="selectedSpotCollection.SpotList.length == 0" class="now-playing"><span class="now-playing-label">No Files Loaded</span></ion-text>
   </ion-item>
   <ion-item lines="none" class="audio-player-view">
-    <ion-text slot="start">{{currectTimePlayed | convertSecondsForView}}</ion-text>
-    <ion-range disabled min="0" [max]="GetTotalSpotCollectionTime()" [value]="currectTimePlayed" ></ion-range>
-    <ion-text slot="end">{{GetTotalSpotCollectionTime() | convertSecondsForView }}</ion-text>
+    <ion-text *ngIf="currentTimePlayed" slot="start">
+      <span *ngIf="currentTimePlayed.hours > 0">{{currentTimePlayed.hours | padMinimumDigits: 2}}:</span>{{currentTimePlayed.minutes | padMinimumDigits: 2}}:{{currentTimePlayed.seconds | padMinimumDigits: 2}}
+    </ion-text>
+    <ion-range disabled min="0" [max]="_utilsService.ConvertMixerTimeToSeconds(totalTimePlayed)" [value]="_utilsService.ConvertMixerTimeToSeconds(currentTimePlayed)" ></ion-range>
+    <ion-text *ngIf="totalTimePlayed" slot="end">
+      <span *ngIf="totalTimePlayed.hours > 0">{{totalTimePlayed.hours | padMinimumDigits: 2}}:</span>{{totalTimePlayed.minutes | padMinimumDigits: 2}}:{{totalTimePlayed.seconds | padMinimumDigits: 2}}
+    </ion-text>
   </ion-item>
   <ion-item lines="none" class="audio-player-controls">
-    <ion-icon name="play-back" [ngClass]="{'disabled-icon' : currentIndex == 0}" slot="start" (click)="PlayPreviousTrack()"></ion-icon>
-    <ion-icon name="play" *ngIf="localAudioElement.paused" class="center-icon" (click)="PlayPausePlayer()"></ion-icon>
-    <ion-icon name="pause" *ngIf="!localAudioElement.paused" class="center-icon" (click)="PlayPausePlayer()"></ion-icon>
-    <ion-icon name="play-forward" [ngClass]="{'disabled-icon' : currentIndex == spotCollectionLength}" slot="end" (click)="PlayNextTrack()"></ion-icon>
+    <ion-icon name="play-back" [ngClass]="{ 'disabled-icon' : currentIndex == 0 }" slot="start" (click)="PlayPreviousTrack()"></ion-icon>
+    <ion-icon name="play" *ngIf="!localPlayerState || localPlayerState == 'pause' || localPlayerState == 'stop'" class="center-icon" (click)="PlayPausePlayer()"></ion-icon>
+    <ion-icon name="pause" *ngIf="localPlayerState == 'play' " class="center-icon" (click)="PlayPausePlayer()"></ion-icon>
+    <ion-icon name="play-forward" [ngClass]="{ 'disabled-icon' : currentIndex == spotCollectionLength }" slot="end" (click)="PlayNextTrack()"></ion-icon>
   </ion-item>
 </div>

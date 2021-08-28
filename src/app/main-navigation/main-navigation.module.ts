@@ -24,6 +24,7 @@ import { ChannelOptionsModalComponent } from '../channel-options-modal/channel-o
 import { LogoutModalComponent } from '../logout-modal/logout-modal.component';
 import { PipesModule } from '../pipes.module';
 import { AudioPlayerComponent } from '../audio-player/audio-player.component';
+import { MessageQueueComponent } from '../message-queue/message-queue.component';
 
 @NgModule({
   imports: [
@@ -50,7 +51,8 @@ import { AudioPlayerComponent } from '../audio-player/audio-player.component';
     ChannelOptionsModalComponent,
     LogoutModalComponent,
     AudioPlayerComponent,
-    TestComponent
+    TestComponent,
+    MessageQueueComponent
   ],
   providers:[
     

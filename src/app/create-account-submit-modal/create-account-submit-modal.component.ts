@@ -15,10 +15,16 @@ export class CreateAccountSubmitModalComponent implements OnInit {
 
   ngOnInit() {}
 
+  /**
+   * Returns true to parent component to complete login
+   */
   DoLogin(){
     this._modal.dismiss(true);
   }
 
+  /**
+   * Returns null to parent component to cancel login
+   */
   Cancel(){
     this._modal.dismiss(null);
   }

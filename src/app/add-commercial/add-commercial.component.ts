@@ -1,20 +1,18 @@
-import { Component, OnInit, NgZone, ViewChild, ElementRef, ChangeDetectorRef, Host } from '@angular/core';
+import { Component, OnInit, NgZone, ChangeDetectorRef } from '@angular/core';
 import { UserAccountService } from 'src/services/account.service';
-import { IonInput, ModalController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular';
 import { LoginResponse } from 'src/models/response/login-response.model';
-import { CdkDragDrop, moveItemInArray, transferArrayItem, copyArrayItem, CdkDropList} from '@angular/cdk/drag-drop';
+import { CdkDragDrop, moveItemInArray, copyArrayItem } from '@angular/cdk/drag-drop';
 import { SpotCollectionResponse } from 'src/models/response/spot-collection-response.model';
 import { UtilsService } from 'src/services/utils.service';
 import { SpotResponse } from 'src/models/response/spot-response.model';
-import { SessionIdentifiers } from 'src/utils/session-identifiers.enum';
 import { SpotCollectionSettings } from 'src/models/spot-collection-settings.model';
-import * as moment from 'moment';
 import { StatusCode } from 'src/utils/status-code.enum';
 import { GlobalService } from 'src/services/global.service';
 import { PadSpotCollectionService } from 'src/services/pad-spot-collection.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { CommercialPlayerService } from 'src/services/commercial-player.service';
-import { MainNavigationPage } from '../main-navigation/main-navigation.page';
+import { MixerService } from 'src/services/mixer.service';
 
 @Component({
   selector: 'app-add-commercial',
@@ -54,19 +52,22 @@ import { MainNavigationPage } from '../main-navigation/main-navigation.page';
 export class AddCommercialComponent implements OnInit {
 
   userInfo: LoginResponse;
+
   selectedSpotCollection: SpotCollectionResponse = new SpotCollectionResponse();
   selectedSpotCollectionIndex: number = 0;
+
   hasNoCommercialsLoaded: boolean = false;
   saveSpotCollectionLoading: boolean = false;
 
+  audioSessionActive: boolean;
+
   constructor(private _userAccountService: UserAccountService,
-              private _modal: ModalController,
               private _ngZone: NgZone,
               private _utilsService: UtilsService,
-              private _globalService: GlobalService,
               private _commercialService: CommercialPlayerService,
               private _changeDetector: ChangeDetectorRef,
-              private _padSpotService: PadSpotCollectionService ) {
+              private _padSpotService: PadSpotCollectionService,
+              private _mixerService: MixerService ) {
     this._userAccountService.userInfo$.subscribe(result =>{
       if(result){
         this.userInfo = result;
@@ -88,12 +89,20 @@ export class AddCommercialComponent implements OnInit {
       this.selectedSpotCollection = this._utilsService.DeepCopy<SpotCollectionResponse>(this.userInfo.SpotCollections[this.selectedSpotCollectionIndex]);
       this._commercialService.SetCommercial(this.selectedSpotCollection);
     }
+    this._mixerService.audioSessionActive$.subscribe(value => {
+      this.audioSessionActive = value;
+    });
+    if(!this.audioSessionActive) {
+      this.audioSessionActive = this._mixerService.localAudioSessionActive;
+    }
   }
 
-  ngOnInit() {
-    
-  }
+  ngOnInit() {}
 
+  /**
+   * Handles drag and drop event.
+   * @param event 
+   */
   Drop(event: CdkDragDrop<SpotResponse[]>) {
     // reordering createCommercialList
     if (event.previousContainer.id == 'createCommercialList' && 
@@ -114,17 +123,27 @@ export class AddCommercialComponent implements OnInit {
              (event.previousContainer.id == 'createCommercialList' && event.container.id == 'spotItemList')) {
       this.selectedSpotCollection.SpotList.splice(event.previousIndex, 1);
     }
+    this._commercialService.SetCommercial(this.selectedSpotCollection);
   }
 
+  /**
+   * Selects a commercial to edit and sets the commercial inside of the commercial player-
+   * @param commercialIndex 
+   */
   SelectCommercialToEdit(commercialIndex: number){
     this._ngZone.run(() =>{
       this.selectedSpotCollectionIndex = commercialIndex;
       this.selectedSpotCollection = this._utilsService.DeepCopy<SpotCollectionResponse>(this.userInfo.SpotCollections[this.selectedSpotCollectionIndex]);
       this.hasNoCommercialsLoaded = false;
-      this._commercialService.SetCommercial(this.selectedSpotCollection);
+      if(this.audioSessionActive) {
+        this._commercialService.SetCommercial(this.selectedSpotCollection);
+      }
     }); 
   }
 
+  /**
+   * Creates a new empty commercial for a user to populate spots into. 
+   */
   CreateNewCommercial(){
     let newCommercial = new SpotCollectionResponse();
     newCommercial.Id = -1;
@@ -141,14 +160,20 @@ export class AddCommercialComponent implements OnInit {
     this._commercialService.SetCommercial(this.selectedSpotCollection);
   }
 
+  /**
+   * Cancels creating a commercial and resets it to an empty commercial 
+   */
   CancelCreateCommercial(){
     this.hasNoCommercialsLoaded = true;
     this.selectedSpotCollection = new SpotCollectionResponse();
     this.selectedSpotCollection.SpotList = new Array<SpotResponse>();
-    this._commercialService.ResetTimePlayed();
-    this._commercialService.SetCommercial(this.selectedSpotCollection)
+    this._commercialService.SetCommercial(this.selectedSpotCollection);
   }
 
+  /**
+   * Saves a commercial (spot list) for a given user.
+   * @param item 
+   */
   SaveCommercial(item: SpotCollectionResponse){
     this.saveSpotCollectionLoading = true;
     let currentCollection = this.userInfo.SpotCollections.find(x => x.Id == item.Id &&
@@ -165,7 +190,7 @@ export class AddCommercialComponent implements OnInit {
     let request = this._padSpotService.ConvertSpotCollectionFromResponseToRequest(currentCollection);
 
     this._padSpotService.AddUpdateSpotCollection(request).toPromise().then(response =>{
-      if(response.StatusCode == StatusCode.Success){
+      if(response.StatusCode == StatusCode.SUCCESS){
         let spotCollection = this.userInfo.SpotCollections.find(collection => collection.Id == response.Data.Id);
         if(spotCollection == null || spotCollection == undefined){
           this.userInfo.SpotCollections.push(response.Data);
@@ -186,7 +211,25 @@ export class AddCommercialComponent implements OnInit {
   }
 
 //#region  Utility
+  /**
+   * Predicate to assist with drag and drop functionality
+   * @returns 
+   */
   NoReturnPredicate() {
+    return false;
+  }
+
+  /**
+   * Utility View Method to determine if the AudioPlayer should be hidden from the view
+   * @returns 
+   */
+  ShouldHideAudioPlayer(): boolean {
+    if(!this.audioSessionActive) {
+      return true;
+    } 
+    if(this.hasNoCommercialsLoaded) {
+      return true;
+    }
     return false;
   }
 //#endregion

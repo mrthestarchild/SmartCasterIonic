@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, ElementRef, Host, NgZone } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, ElementRef, Host, NgZone, ViewChild } from '@angular/core';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { LoginRequest } from 'src/models/request/login-request.model';
 import { AuthenticationService } from 'src/services/authentication.service';
@@ -11,6 +11,9 @@ import { LoginResponse } from 'src/models/response/login-response.model';
 import { FileSystemService } from 'src/services/file-system.service';
 import { HomePage } from '../home/home.page';
 import { CommercialPlayerService } from 'src/services/commercial-player.service';
+import { SpotCollectionResponse } from 'src/models/response/spot-collection-response.model';
+import { IonButton, IonInput } from '@ionic/angular';
+import { Mixer } from '@skylabs_technology/capacitor-mixer';
 
 @Component({
   selector: 'app-login',
@@ -21,7 +24,12 @@ export class LoginComponent implements OnInit {
 
   _homePage: HomePage;
 
-  @Output() isLoggedIn = new EventEmitter<boolean>();
+  @Output() isLoggedIn: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+  @ViewChild("username", { static: false }) username: ElementRef;
+  @ViewChild("password", { static: false }) password: ElementRef;
+  @ViewChild("submit", { static: false }) submit: ElementRef;
+
   loginForm: FormGroup;
   payload: LoginRequest;
 
@@ -75,16 +83,22 @@ export class LoginComponent implements OnInit {
     }
 
     this._authService.RequestLogin(this.payload).subscribe(async result => {
-      if (result.StatusCode === StatusCode.Success) {
+      if (result.StatusCode === StatusCode.SUCCESS) {
         let userInfo = await this.InitApplication(result.Data);
         this._userAccountService.SaveUserAccountInfo(userInfo);
-        this._commercialService.SetCommercial(userInfo.SpotCollections[0]);
+        if(userInfo.SpotCollections[0] != null){
+          this._commercialService.SetCommercial(userInfo.SpotCollections[0]);
+        }
+        else {
+          userInfo.SpotCollections[0] = new SpotCollectionResponse();
+          this._commercialService.SetCommercial(userInfo.SpotCollections[0]);
+        }
         this._globalService.LogInUser(true);
         this.loginForm.reset();
         this.loginLoading = false;
         this._homePage.showMainLoading = false;
         this._router.navigateByUrl('/main-navigation');
-      } else if (result.StatusCode === StatusCode.UserNotFound || result.StatusCode === StatusCode.InvalidPassword) {
+      } else if (result.StatusCode === StatusCode.USER_NOT_FOUND || result.StatusCode === StatusCode.INVALID_PASSWORD) {
         this.showError = true;
         this.errorText = result.StatusMessage;
         this.loginLoading = false;
@@ -122,7 +136,7 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  GoToNext(element){
+  GoToNext(element: any){
     console.log(typeof(element))
     element.setFocus();
   }

@@ -1,0 +1,8 @@
+<ion-list class="message-queue-container">
+  <div *ngFor="let message of messageList; index as i">
+    <ion-item *ngIf="message.ShouldShow" lines="full" [color]="message.MessageQueueType" >
+      <ion-text>{{message.UserMessage}}</ion-text>
+      <ion-icon (click)="DismissMessage(i)" name="close-circle" slot="end" ></ion-icon>
+    </ion-item>
+  </div>
+</ion-list>

@@ -1,3 +1,4 @@
+<app-message-queue></app-message-queue>
 <div class="add-pad-wrapper">
   <div class="add-pad-container">
     <div class="add-pad-main">
@@ -16,11 +17,11 @@
     <div class="add-pad-files">
       <ion-button expand="full" (click)="SelectFile()" >Get Local Files</ion-button>
       <ion-list class="file-list" *ngFor="let spot of userInfo.Spots">
-        <ion-item color="dark" [disabled]="!spot.CanResolveUri">
+        <ion-item class="file-list-item" color="dark" [disabled]="!spot.CanResolveUri">
+          <!-- TODO: fix this to use Mixer.GetTotalTime -->
           {{spot.Name}}: {{spot.DurationMinutes | convertSecondsForView }}
         </ion-item>
       </ion-list>
     </div>
-    <audio hidden preload="auto" src=""></audio>
   </div>
 </div>

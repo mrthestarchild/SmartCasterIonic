@@ -23,7 +23,8 @@ export class AppComponent {
   ) {
     this.initializeApp();
     this.appLoading = false;
-    this.isLoggedIn = this._globalService.CheckUserLoggedIn() ? this._globalService.CheckUserLoggedIn() : false;
+    // this.isLoggedIn = this._globalService.CheckUserLoggedIn() ? this._globalService.CheckUserLoggedIn() : false;
+    this.isLoggedIn = false;
     this._globalService.isLoggedIn$.subscribe(value => {
       this.isLoggedIn = value;
     });

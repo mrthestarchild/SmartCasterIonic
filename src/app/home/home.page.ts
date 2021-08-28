@@ -4,6 +4,11 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 import { setClassMetadata } from '@angular/core/src/r3_symbols';
 import { Router } from '@angular/router';
 import { SessionIdentifiers } from 'src/utils/session-identifiers.enum';
+import { LoginComponent } from '../login/login.component';
+import { UserAccountService } from 'src/services/account.service';
+import { SpotCollectionResponse } from 'src/models/response/spot-collection-response.model';
+import { CommercialPlayerService } from 'src/services/commercial-player.service';
+import { GlobalService } from 'src/services/global.service';
 
 
 @Component({
@@ -66,27 +71,58 @@ import { SessionIdentifiers } from 'src/utils/session-identifiers.enum';
 export class HomePage {
 
   @ViewChild('logo',{ read: ElementRef, static: true }) logo: ElementRef;
+
+  @ViewChild('login', {static: true}) loginComponent: LoginComponent;
+
   showLogin: boolean = true;
   changeColor: boolean = true;
   hideLogo: Animation;
   loadingInfoMessage: string = "";
   showMainLoading: boolean = false;
 
-  constructor(private _animationController: AnimationController,
+  constructor(private _userAccountService: UserAccountService,
+              private _commercialService: CommercialPlayerService,
+              private _globalService: GlobalService,
               private _router: Router,
               private _ngZone: NgZone) {
       // TODO: remove after testing?
       let userLoggedIn = JSON.parse(localStorage.getItem(SessionIdentifiers.UserLoggedIn));
       console.log("userLoggedIn: " + userLoggedIn);
       if(userLoggedIn === true) {
-        this._router.navigateByUrl("/main-navigation");
+        this.AutoLoginUser();
       }
   }
 
+  /**
+   * Logs in a user automatically if the user has not logged out of their account.
+   */
+  async AutoLoginUser() {
+    let userInfo = await this._userAccountService.GetSavedUserAccountInfo();
+    if(userInfo){
+      userInfo = await this.loginComponent.InitApplication(userInfo);
+      this._userAccountService.SaveUserAccountInfo(userInfo);
+      if(userInfo.SpotCollections[0] != null){
+        this._commercialService.SetCommercial(userInfo.SpotCollections[0]);
+      }
+      else {
+        userInfo.SpotCollections[0] = new SpotCollectionResponse();
+        this._commercialService.SetCommercial(userInfo.SpotCollections[0]);
+      }
+      this._globalService.LogInUser(true);
+      this._router.navigateByUrl("/main-navigation");
+    }
+  }
+
+  /**
+   * Opens the create account page for the user
+   */
   OpenCreateAccount() {
     this.showLogin = false;
   }
 
+  /**
+   * Closes the create account page for the user
+   */
   CloseCreateAccount() {
     this._ngZone.run(() =>{
       this.showLogin = true;

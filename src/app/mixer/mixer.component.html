@@ -1,12 +1,33 @@
+<app-message-queue></app-message-queue>
 <div class="mixer-wrapper">
   <div class="mixer-container">
+    <!-- <div class="mixer-session-overlay" *ngIf="!isAudioSessionActive" >
+      <div class="mixer-session-overlay-items" >
+        <ion-button (click)="InitAudioSession()">
+          Activate Audio Session
+        </ion-button>
+      </div>
+    </div> -->
+    
     <div class="soundboard-wrapper">
       <div class="soundboard-container">
-        <div class="channel-wrapper" *ngFor="let mixer of selectedSoundLevel.MixerChannelsJson.Channels; let i = index;" >
-          <div class="mixer-knob-container" *ngFor="let mixerKnob of mixer.MixerKnobs; let ind = index;" >
+        <div class="audio-session-container">
+          <ion-list>
+            <ion-item lines="none" >
+              <ion-button *ngIf="!isAudioSessionActive" slot="end" [color]="'medium'" (click)="InitAudioSession()">
+                <ion-icon slot="icon-only" name="options" ></ion-icon>
+              </ion-button>
+              <ion-button *ngIf="isAudioSessionActive" slot="end" [color]="'success'" (click)="DeinitAudioSession()">
+                <ion-icon slot="icon-only" name="options" ></ion-icon>
+              </ion-button>
+            </ion-item>
+          </ion-list>
+        </div>
+        <div class="channel-wrapper" *ngFor="let mixer of selectedSoundLevel.MixerChannelsJson.Channels; index as i;" >
+          <div class="mixer-knob-container" *ngFor="let mixerKnob of mixer.MixerKnobs; index as ind;" >
             <img src="../../assets/images/{{mixerKnob.MixerKnobImage}}"
                  id="eqKnob{{i}}{{ind}}"
-                 (pan)="TurnEqKnob($event, i, ind)" />
+                 (pan)="TurnEqKnob($event, mixerKnob, i, ind)" />
             <p class="mixer-knob-value">
               {{mixerKnob.CurrentVolume}}
             </p>
@@ -31,7 +52,10 @@
           <div class="slider-wrapper">
             <div class="slider-container">
               <div class="mixer-slider-container">
-                  <div id="meter{{i}}" class="audio-meter" ></div>
+                  <div id="meter{{i}}" class="audio-meter">
+                    <!-- <div class="meter-label" *ngFor="let level of meterLabels">{{level}}db</div> -->
+                    <div [id]="'meter-mask-' + i.toString()" class="audio-meter-mask"></div>
+                  </div>
                   <mat-slider class="mixer-slider" min="0" max="2" step="0.01" (pan)="Log()" (input)="UpdateVolume($event, i, mixer)" [(ngModel)]="mixer.CurrentVolume" vertical></mat-slider>
               </div>
             </div>
@@ -60,7 +84,7 @@
             </ng-container>
           </ion-list>
           <div class="commercial-audio-player">
-            <app-audio-player></app-audio-player>
+            <app-audio-player *ngIf="isAudioSessionActive"></app-audio-player>
           </div>
         </div>
         <div class="pad-list-container" *ngIf="showPads">
